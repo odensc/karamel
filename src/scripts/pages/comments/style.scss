@@ -1,0 +1,20 @@
+.container {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.controls {
+	display: flex;
+	align-items: center;
+
+	button {
+		width: 1rem;
+		height: 1rem;
+		margin: 0 10px;
+	}
+
+	input { width: 4rem; }
+}
