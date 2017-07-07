@@ -1,12 +1,12 @@
 import i18next from "i18next";
-import XHR, {BackendOptions} from "i18next-xhr-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
+import XHR, { BackendOptions } from "i18next-xhr-backend";
 
 function loadLocale(url: string, _: any, callback: any) {
 	try {
-		callback(require(`../translations/${url}.json`), {status: 200});
+		callback(require(`../translations/${url}.json`), { status: 200 });
 	} catch (e) {
-		callback(null, {status: 404});
+		callback(null, { status: 404 });
 	}
 }
 
