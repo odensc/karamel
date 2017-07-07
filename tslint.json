@@ -1,5 +1,6 @@
 {
 	"extends": ["tslint:recommended", "tslint-react"],
+	"defaultSeverity": "warning",
 	"rules": {
 		"jsx-alignment": true,
 		"jsx-boolean-value": [true, "never"],
@@ -35,6 +36,7 @@
 				]
 			}
 		],
+		"no-empty": false,
 		"no-empty-interface": false,
 		"no-namespace": false,
 		"no-object-literal-type-assertion": false,
@@ -53,6 +55,12 @@
 		"array-type": [true, "array"],
 		"arrow-parens": [true, "ban-single-arg-parens"],
 		"interface-name": [true, "never-prefix"],
-		"ordered-imports": [false]
+		"ordered-imports": [
+			true,
+			{
+				"import-sources-order": "any",
+				"named-imports-order": "lowercase-last"
+			}
+		]
 	}
 }
