@@ -1,0 +1,13 @@
+{
+	"year": "a year ago",
+	"year_plural": "{{count}} years ago",
+	"month": "a month ago",
+	"month_plural": "{{count}} months ago",
+	"day": "a day ago",
+	"day_plural": "{{count}} days ago",
+	"hour": "an hour ago",
+	"hour_plural": "{{count}} hours ago",
+	"minute": "a minute ago",
+	"minute_plural": "{{count}} minutes ago",
+	"now": "just now"
+}
