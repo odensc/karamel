@@ -4,7 +4,8 @@
 	"version": "0.0.0",
 	"scripts": {
 		"build": "webpack --progress --config tools/webpack.prod.js",
-		"start": "webpack --watch --progress --config tools/webpack.dev.js"
+		"start": "webpack --watch --progress --config tools/webpack.dev.js",
+		"test": "exit 0"
 	},
 	"devDependencies": {
 		"@types/chrome": "0.0.47",
