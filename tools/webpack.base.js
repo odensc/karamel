@@ -1,60 +1,38 @@
 const common = require("./common");
-const config = require("./config");
-const {resolve, join} = require("path");
+const { join, resolve } = require("path");
 const webpack = require("webpack");
 const CleanPlugin = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
 
 module.exports = {
 	entry: {
 		"index": [
-			`${common.paths.src}/${common.paths.scriptsName}/index.tsx`
+			`${common.paths.src}/index.tsx`
 		]
 	},
 	output: {
 		path: common.paths.dist,
 		filename: "[name].js",
-		chunkFilename: "[name].chunk.js",
-		publicPath: config.publicPath
+		chunkFilename: "[name].chunk.js"
 	},
 	resolve: {
 		extensions: [".ts", ".tsx", ".js"],
 		modules: [
 			"node_modules",
-			resolve(__dirname, join("..", common.paths.src, common.paths.scriptsName))
+			resolve(__dirname, join("..", common.paths.src))
 		]
 	},
 	module: {
 		rules: [
 			{
-				test: /\.tsx?$/,
-				exclude: /node_modules/,
-				loader: "awesome-typescript-loader"
-			},
-
-			{
 				enforce: "pre",
 				test: /\.scss$/,
-				loaders: ExtractTextPlugin.extract({
-					use: common.loaders.css
-				})
-			},
-
-			{
-				test: /\.(woff|woff2|eot|ttf)$/i,
-				loader: "file-loader"
+				use: common.loaders.css
 			},
 
 			{
 				test: /\.(gif|png|jpe?g|svg)$/i,
-				loaders: common.loaders.images
-			},
-
-			{
-				test: /\.json$/,
-				loader: "json-loader"
+				use: common.loaders.images
 			}
 		]
 	},
@@ -67,7 +45,6 @@ module.exports = {
 		),
 		new CopyPlugin([
 			{from: common.paths.static}
-		]),
-		new ExtractTextPlugin("index.css")
+		])
 	]
 };

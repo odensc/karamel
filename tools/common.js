@@ -1,28 +1,37 @@
-const {resolve, join} = require("path");
+const { join, resolve } = require("path");
 
 const ROOT = "./src";
 const paths = {
 	dist: resolve("dist"),
-	icon: `${ROOT}/assets/icon.png`,
-	scriptsName: "scripts",
 	src: ROOT,
 	stylesName: "styles",
-	static: `${ROOT}/assets/static`
+	static: `${ROOT}/assets/static`,
+	tsIndex: `${ROOT}/index.tsx`
 };
 
 module.exports = {
 	loaders: {
 		css: [
+			"style-loader",
+
 			{
 				loader: "typings-for-css-modules-loader",
 				options: {
 					namedExport: true,
 					modules: true,
 					camelCase: true,
-					localIdentName: "[folder]__[local]--[hash:base64:4]",
+					sourceMap: (process.env.NODE_ENV === "development" || process.env.PRODUCTION_DEBUG),
+					localIdentName: (process.env.NODE_ENV === "development" || process.env.PRODUCTION_DEBUG)
+						? "[name]__[local]--[hash:2]"
+						: "[hash:2]",
 					importLoaders: 1,
 					minimize: process.env.NODE_ENV === "production"
 				}
+			},
+
+			{
+				loader: "./tools/scope-hack-loader",
+				options: {prepend: "#tube-mount"}
 			},
 
 			{
@@ -41,7 +50,7 @@ module.exports = {
 			}
 		],
 		images: [
-			"file-loader",
+			"url-loader?limit=10000",
 
 			{
 				loader: "image-webpack-loader",
