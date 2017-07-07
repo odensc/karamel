@@ -1,4 +1,4 @@
-import {CompatLayer} from "./";
+import { CompatLayer } from "./";
 
 export default class OldLayer implements CompatLayer {
 	getWatchQuery() {
@@ -9,7 +9,11 @@ export default class OldLayer implements CompatLayer {
 		return "#watch-discussion";
 	}
 
-	getCommentsContainerElement() {
-		return document.querySelector("#comment-section-renderer") as HTMLElement;
+	getCommentsContainerQuery() {
+		return "#comment-section-renderer";
+	}
+
+	getVideoDescriptionQuery() {
+		return "#eow-description";
 	}
 }
