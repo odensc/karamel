@@ -9,6 +9,7 @@ node_modules
 !.vscode/launch.json
 
 # Misc
+builds
 dist
 *.log
 *.scss.d.ts
