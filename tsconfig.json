@@ -1,10 +1,12 @@
 {
 	"compilerOptions": {
-		"module": "es2015",
+		"downlevelIteration": true,
+		"module": "esnext",
 		"moduleResolution": "node",
-		"target": "es5",
+		"target": "es2015",
 
-		"baseUrl": "./src/scripts",
+		"baseUrl": "./src",
+		"outDir": "./dist",
 
 		"jsx": "react",
 		"lib": [
@@ -16,14 +18,13 @@
 		],
 
 		"alwaysStrict": true,
+		"strict": true,
 		"sourceMap": true,
 
 		"forceConsistentCasingInFileNames": true,
-		"noImplicitAny": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"strictNullChecks": true,
 
 		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true
