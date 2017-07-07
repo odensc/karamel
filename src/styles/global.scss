@@ -1,11 +1,23 @@
 :global(#tube-mount) {
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
 
-font-size: 16px;
+	button {
+		background: transparent;
+		border: 0;
+		color: inherit;
+		cursor: pointer;
+		font: inherit;
+		line-height: normal;
+		overflow: visible;
+		-webkit-appearance: none;
 
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
+		// Focus styles should be defined on individual elements for accessibility.
+		&:focus {
+			outline: 0;
+		}
+	}
 }
