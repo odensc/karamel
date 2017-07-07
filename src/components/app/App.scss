@@ -1,0 +1,14 @@
+.container {
+	background: #fff;
+	color: #000;
+	display: flex;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	padding-right: 32px;
+	position: relative;
+
+	@at-root [dark] & {
+		background: #111;
+		color: #e3e3e3;
+	}
+}

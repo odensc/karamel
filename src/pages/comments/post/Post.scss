@@ -1,0 +1,42 @@
+.post {
+	border: 1px solid #ddd;
+	border-top: 0;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	padding-right: 10px;
+	padding-top: 10px;
+
+	@at-root [dark] & {
+		border-color: #4a4a4a;
+	}
+}
+
+.sort {
+	margin-bottom: 10px;
+	margin-left: 10px;
+
+	select { font-size: 11px; }
+}
+
+.comments {
+	margin-left: 5px;
+}
+
+.loading {
+	margin: 10px;
+}
+
+.header {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 15px;
+	padding-left: 20px;
+
+	.title {
+		color: #369;
+		font-size: 16px;
+		margin-bottom: 2px;
+		text-decoration: none;
+	}
+}

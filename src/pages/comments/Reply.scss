@@ -1,0 +1,34 @@
+.reply {
+	display: flex;
+	flex-direction: column;
+	margin-top: 10px;
+
+	textarea {
+		width: 60%;
+		height: 100px;
+	}
+}
+
+.buttons {
+	display: flex;
+
+	button {
+		color: #888;
+		font-weight: bold;
+		margin: 5px 5px 10px 0;
+		padding: 0 1px;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	p {
+		margin: 5px 5px 10px 0;
+	}
+
+	.error {
+		color: red;
+	}
+}

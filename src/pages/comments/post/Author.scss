@@ -1,0 +1,41 @@
+.link {
+	color: #369;
+	margin-right: 0.5em;
+	text-decoration: none;
+
+	@at-root [dark] & {
+		color: #2693e6;
+	}
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.flair {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    color: #555;
+    margin-right: .5em;
+    padding: 0 2px;
+    unicode-bidi: isolate;
+
+	@at-root [dark] & {
+		background: #282828;
+		border-color: #4a4a4a;
+		color: #e3e3e3;
+	}
+}
+
+.admin {
+	color: #ff0011;
+}
+
+.moderator {
+	color: #228822;
+}
+
+.submitter {
+	color: #0055df;
+}

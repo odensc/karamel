@@ -1,0 +1,19 @@
+.button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transition: transform 0.2s ease;
+
+	&:hover, &:focus {
+		transform: scale(1.1);
+	}
+
+	img {
+		width: 24px;
+		height: 24px;
+
+		@at-root [dark] & {
+			filter: invert(100%);
+		}
+	}
+}

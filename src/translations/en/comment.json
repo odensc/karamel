@@ -1,0 +1,15 @@
+{
+	"footer": {
+		"parent": "parent",
+		"permalink": "permalink",
+		"reply": "reply",
+		"save": "save",
+		"unsave": "unsave"
+	},
+	"loadMore": "load more comments",
+	"loadMore_count": "{{count}} reply",
+	"loadMore_count_plural": "{{count}} replies",
+	"loadMore_loading": "loading...",
+	"score": "{{count}} point",
+	"score_plural": "{{count}} points"
+}
