@@ -3,21 +3,20 @@ import { InjectedTranslateProps, translate } from "react-i18next";
 import classnames from "classnames";
 import { decode } from "he";
 
-import { save, vote } from "common/reddit-api";
 import { Comment as RedditComment, Post } from "data/reddit";
 
 import { Author } from "../Author";
+import { Footer } from "./Footer";
 import { Reply } from "./Reply";
 import { Time } from "../Time";
+import { Vote } from "./Vote";
 import style from "./Comment.scss";
 
-@translate("comment")
+@translate(["comment", "footer"])
 export class Comment extends React.PureComponent<CommentProps, CommentState> {
 	state: CommentState = {
 		collapsed: false,
-		likes: null,
 		replyOpen: false,
-		saved: false,
 		score: 1
 	};
 
@@ -26,11 +25,8 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 		loadMore(comment.parent_id, post.name, comment.name, comment.children!);
 	}
 
-	onClickSave = async () => {
-		const { comment, modhash } = this.props;
-
-		await save(modhash, comment.name, this.state.saved).toPromise();
-		this.setState({ saved: !this.state.saved });
+	onScoreChange = (score: number) => {
+		this.setState({ score });
 	}
 
 	toggleCollapsed = () => {
@@ -41,33 +37,9 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 		this.setState({ replyOpen: !this.state.replyOpen });
 	}
 
-	vote = async (dir: number) => {
-		const { comment, modhash } = this.props;
-		const { likes, score } = this.state;
-		const trueScore = comment.score - (comment.likes === true ? 1 : -1);
-		if ((dir === -1 && likes === false) || (dir === 1 && likes === true)) dir = 0;
-
-		if (dir === -1) this.setState({ likes: false, score: trueScore - 1 });
-		else if (dir === 1) this.setState({ likes: true, score: trueScore + 1 });
-		else if (dir === 0) this.setState({ likes: null, score: trueScore });
-
-		try {
-			await vote(modhash, comment.name, dir).toPromise();
-		} catch (err) {
-			// If there was an error voting, set back to previous like state.
-			this.setState({ likes, score });
-		}
-	}
-
-	voteDown = () => this.vote(-1);
-
-	voteUp = () => this.vote(1);
-
 	componentDidMount() {
 		const { comment } = this.props;
 		this.setState({
-			likes: comment.likes,
-			saved: comment.saved,
 			score: comment.score
 		});
 	}
@@ -75,7 +47,7 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 	render(): JSX.Element | null {
 		const t = this.props.t!;
 		const { comment, commentsLoading, loadMore, modhash, moreCommentsLoading, post } = this.props;
-		const { collapsed, likes } = this.state;
+		const { collapsed, score } = this.state;
 		const htmlBody = { __html: "" };
 		if (comment.body_html) htmlBody.__html = decode(comment.body_html);
 
@@ -85,17 +57,15 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 					[style.collapsed]: this.state.collapsed
 				})}
 			>
-				<div className={style.vote}>
-					<button
-						className={classnames(style.up, { [style.active]: likes === true })}
-						onClick={this.voteUp}
+				{modhash && (
+					<Vote
+						id={comment.name}
+						likes={comment.likes}
+						modhash={modhash}
+						onScoreChange={this.onScoreChange}
+						score={comment.score}
 					/>
-
-					<button
-						className={classnames(style.down, { [style.active]: likes === false })}
-						onClick={this.voteDown}
-					/>
-				</div>
+				)}
 
 				<div className={style.content}>
 					<div className={style.tagline}>
@@ -112,7 +82,7 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 						<p className={style.score}>
 							{comment.score_hidden
 								? t("score_hidden")
-								: t("score", { count: this.state.score })}
+								: t("score", { count: score })}
 						</p>
 						&nbsp;
 						<Time created={comment.created_utc} />
@@ -120,27 +90,16 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 
 					<div className={style.body} dangerouslySetInnerHTML={htmlBody} />
 
-					<ul className={style.footer}>
-						<li>
-							<a target="_blank" href={`https://reddit.com${post.permalink.replace(/\?.*/, "")}${comment.id}`}>
-								{t("footer.permalink")}
-							</a>
-						</li>
-
+					<Footer
+						id={comment.name}
+						modhash={modhash}
+						permalink={`https://reddit.com${post.permalink.replace(/\?.*/, "")}${comment.id}`}
+						saved={comment.saved}
+					>
 						{modhash && (
-							<li>
-								<button onClick={this.onClickSave}>
-									{t(`footer.${this.state.saved ? "unsave" : "save"}`)}
-								</button>
-							</li>
+							<button onClick={this.toggleReply}>{t("footer:reply")}</button>
 						)}
-
-						{modhash && (
-							<li>
-								<button onClick={this.toggleReply}>{t("footer.reply")}</button>
-							</li>
-						)}
-					</ul>
+					</Footer>
 
 					{(comment.replies || this.state.replyOpen) && (
 						<div className={style.children}>
@@ -196,8 +155,6 @@ export interface CommentProps extends InjectedTranslateProps {
 
 interface CommentState {
 	collapsed: boolean;
-	likes: boolean | null;
 	replyOpen: boolean;
-	saved: boolean;
 	score: number;
 }

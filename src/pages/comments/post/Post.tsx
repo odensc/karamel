@@ -4,8 +4,10 @@ import { InjectedTranslateProps, translate } from "react-i18next";
 import { Comment as RedditComment, Post as RedditPost } from "data/reddit";
 
 import { Author } from "../Author";
+import { Footer } from "./Footer";
 import { Comment } from "./Comment";
 import { Time } from "../Time";
+import { Vote } from "./Vote";
 import style from "./Post.scss";
 
 @translate(["post", "time"])
@@ -32,16 +34,40 @@ export class Post extends React.Component<PostProps, {}> {
 		return (
 			<div className={style.post}>
 				<header className={style.header}>
-					<a className={style.title} href={`https://reddit.com${post.permalink}`}>{post.title}</a>
-					<p>
-						<Time created={post.created_utc} />
-						&nbsp;{t("by")}&nbsp;
-						<Author
-							author={post.author}
-							distinguished={post.distinguished}
-							flair={post.author_flair_text}
+					{modhash && (
+						<Vote
+							id={post.name}
+							likes={post.likes}
+							modhash={modhash}
+							score={post.score}
+							showScore
 						/>
-					</p>
+					)}
+
+					<div className={style.headerContent}>
+						<a className={style.title} href={`https://reddit.com${post.permalink}`}>{post.title}</a>
+
+						<p>
+							<Time created={post.created_utc} />
+							&nbsp;{t("by")}&nbsp;
+							<Author
+								author={post.author}
+								distinguished={post.distinguished}
+								flair={post.author_flair_text}
+							/>
+						</p>
+
+						<Footer
+							id={post.name}
+							modhash={modhash}
+							permalink={`https://reddit.com${post.permalink}`}
+							saved={post.saved}
+						>
+							{/*modhash && (
+								<button onClick={this.toggleReply}>{t("footer:reply")}</button>
+							)*/}
+						</Footer>
+					</div>
 				</header>
 
 				<div className={style.comments}>
