@@ -1,0 +1,25 @@
+.footer {
+	color: #888;
+	display: flex;
+    font-weight: bold;
+	list-style: none;
+	margin-top: 2px;
+
+	li {
+		padding-right: 4px;
+
+		&:not(:first-of-type) {
+			padding-left: 4px;
+		}
+
+		a, button {
+			color: inherit;
+			padding: 0 1px;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
