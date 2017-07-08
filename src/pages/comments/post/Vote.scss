@@ -1,0 +1,44 @@
+.vote {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	margin-right: 7px;
+
+	.down, .up {
+		background-image: url("assets/vote.png");
+		background-repeat: no-repeat;
+		margin-top: 2px;
+		min-height: 15px;
+		min-width: 15px;
+	}
+
+	.down {
+		background-position: 0 0;
+	}
+
+	&.downActive .down {
+		background-position: -15px 0;
+	}
+
+	.up {
+		background-position: -30px 0;
+
+	}
+
+	&.upActive .up {
+		background-position: -45px 0;
+	}
+
+	&.downActive .score {
+		color: #9494FF;
+	}
+
+	&.upActive .score {
+		color: #FF8B60;
+	}
+}
+
+.score {
+	font-size: 13px;
+	font-weight: bold;
+}
