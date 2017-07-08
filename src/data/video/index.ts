@@ -1,5 +1,8 @@
+import { MiddlewareAPI } from "redux";
 import { ActionsObservable } from "redux-observable";
+
 import "common/rxjs";
+import { State as GlobalState } from "data";
 
 import { requestPosts } from "../reddit";
 import { Action, ActionTypes } from "./actions";
@@ -20,11 +23,10 @@ export const reducer = (state = initialState, action: Action): State => {
 	}
 };
 
-export const epic = (actions$: ActionsObservable<Action>) => actions$
+export const epic = (actions$: ActionsObservable<Action>, store: MiddlewareAPI<GlobalState>) => actions$
 	.ofType(ActionTypes.UPDATE)
 	.map(action => requestPosts({
-		// TODO options
-		sort: "top",
+		sort: store.getState().options.postSort,
 		videoId: action.payload.id!
 	}));
 

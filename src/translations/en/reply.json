@@ -1,5 +1,6 @@
 {
 	"cancel": "cancel",
 	"save": "save",
-	"submitting": "submitting..."
+	"submitting": "submitting...",
+	"unknownError": "something went wrong"
 }

@@ -11,5 +11,6 @@
 	"loadMore_count_plural": "{{count}} replies",
 	"loadMore_loading": "loading...",
 	"score": "{{count}} point",
+	"score_hidden": "score hidden",
 	"score_plural": "{{count}} points"
 }

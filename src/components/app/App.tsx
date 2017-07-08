@@ -7,6 +7,7 @@ import { push } from "connected-react-router";
 import { returnOf } from "common/util";
 import { State } from "data";
 import { request as requestOptions } from "data/options";
+import { requestMe } from "data/reddit";
 
 import { ToggleButton } from "components/toggle-button";
 import { VideoListener } from "components/video-listener";
@@ -20,6 +21,7 @@ class App extends React.Component<AppProps, {}> {
 	private hasSwitched = false;
 
 	componentDidMount() {
+		this.props.requestMe();
 		this.props.requestOptions();
 		this.props.push(`/${this.props.default}`);
 	}
@@ -65,6 +67,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
 	push,
+	requestMe,
 	requestOptions
 }, dispatch);
 

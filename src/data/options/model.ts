@@ -1,4 +1,5 @@
 export interface State {
+	commentSort: string;
 	default: "youtube" | "reddit";
-	sort: "relevance" | "hot" | "top" | "new" | "comments";
+	postSort: string;
 }

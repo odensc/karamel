@@ -3,37 +3,31 @@ import { InjectedTranslateProps, translate } from "react-i18next";
 
 import { Comment as RedditComment, Post as RedditPost } from "data/reddit";
 
-import { Author } from "./Author";
+import { Author } from "../Author";
 import { Comment } from "./Comment";
 import { Time } from "../Time";
 import style from "./Post.scss";
 
-const sortTypes = [
-	"confidence",
-	"top",
-	"new",
-	"controversial",
-	"old",
-	"random",
-	"qa",
-	"live"
-];
-
 @translate(["post", "time"])
-export class Post extends React.Component<PostProps, PostState> {
-	state = { sort: "confidence" };
-
+export class Post extends React.Component<PostProps, {}> {
 	loadMore = (parentId: string, linkId: string, id: string, children: string[]) => {
-		this.props.loadMore(parentId, linkId, id, children, this.state.sort);
-	}
-
-	onSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		this.setState({ sort: e.target.value });
+		this.props.loadMore(parentId, linkId, id, children, this.props.sort);
 	}
 
 	render() {
 		const t = this.props.t!;
-		const { comments, commentsLoading, modhash, moreCommentsLoading, post } = this.props;
+		const { comments, commentsLoading, modhash, moreCommentsLoading, onSortChange, post, sort } = this.props;
+
+		const sortTypes = {
+			best: t("sort.best"),
+			top: t("sort.top"),
+			new: t("sort.new"),
+			controversial: t("sort.controversial"),
+			old: t("sort.old"),
+			random: t("sort.random"),
+			qa: t("sort.qa"),
+			live: t("sort.live")
+		};
 
 		return (
 			<div className={style.post}>
@@ -54,9 +48,9 @@ export class Post extends React.Component<PostProps, PostState> {
 					<div className={style.sort}>
 						{t("sortedBy")}:
 						&nbsp;
-						<select onChange={this.onSortChange} value={this.state.sort}>
-							{sortTypes.map(type => (
-								<option key={type} value={type}>{type}</option>
+						<select onChange={onSortChange} value={sort}>
+							{Object.entries(sortTypes).map(([type, name]) => (
+								<option key={type} value={type}>{name}</option>
 							))}
 						</select>
 					</div>
@@ -92,9 +86,7 @@ interface PostProps extends InjectedTranslateProps {
 	modhash: string;
 	moreCommentsLoading: string[];
 	post: RedditPost;
-	loadMore(parentId: string, linkId: string, id: string, children: string[], sort: string): void;
-}
-
-interface PostState {
 	sort: string;
+	loadMore(parentId: string, linkId: string, id: string, children: string[], sort: string): void;
+	onSortChange(e: React.ChangeEvent<HTMLSelectElement>): void;
 }

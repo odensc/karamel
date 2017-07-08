@@ -12,7 +12,7 @@ import { PostList } from "./post-list";
 import style from "./Comments.scss";
 
 class Comments extends React.Component<CommentsProps, CommentsState> {
-	state: CommentsState = { };
+	state: CommentsState = { sort: {} };
 
 	loadMore = (parentId: string, linkId: string, id: string, children: string[], sort: string) => {
 		this.props.requestMoreComments({ parentId, linkId, id, children, sort });
@@ -20,14 +20,24 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 
 	onPostClick = (post: RedditPost) => {
 		this.setState({ post });
-		this.props.requestComments(post.name);
+		this.props.requestComments(post.name, this.state.sort[post.name] || this.props.commentSort);
+	}
+
+	onSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		this.props.requestComments(this.state.post!.name, e.target.value);
+		this.setState({
+			sort: {
+				...this.state.sort,
+				[this.state.post!.name]: e.target.value
+			}
+		});
 	}
 
 	selectFirstPost(posts: RedditPost[]) {
 		// If posts have changed, default to first post.
 		if (posts.length > 0 && !posts.includes(this.state.post!)) {
 			this.setState({ post: posts[0] });
-			this.props.requestComments(posts[0].name);
+			this.props.requestComments(posts[0].name, this.props.commentSort);
 		}
 	}
 
@@ -58,7 +68,9 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 						loadMore={this.loadMore}
 						modhash={this.props.modhash}
 						moreCommentsLoading={this.props.moreCommentsLoading}
+						onSortChange={this.onSortChange}
 						post={post}
+						sort={this.state.sort[post.name] || "best"}
 					/>
 				)}
 			</section>
@@ -68,15 +80,16 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 
 interface CommentsState {
 	post?: RedditPost;
+	sort: { [id: string]: string; };
 }
 
 const mapStateToProps = (state: State) => ({
 	comments: state.reddit.comments,
+	commentSort: state.options.commentSort,
 	commentsLoading: state.reddit.commentsLoading,
-	modhash: state.reddit.modhash,
+	modhash: state.reddit.me ? state.reddit.me.modhash : "",
 	moreCommentsLoading: state.reddit.moreCommentsLoading,
-	posts: state.reddit.posts,
-	sort: state.options.sort
+	posts: state.reddit.posts
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({

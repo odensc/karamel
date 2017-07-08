@@ -1,7 +1,7 @@
 export interface State {
 	comments: { [id: string]: Comment[] | undefined; };
 	commentsLoading: boolean;
-	modhash: string;
+	me?: Me;
 	moreCommentsLoading: string[];
 	posts: Post[];
 	postsLoading: boolean;
@@ -22,6 +22,7 @@ export interface Comment {
 	edited: boolean;
 	gilded: number;
 	id: string;
+	likes: boolean | null;
 	name: string;
 	parent_id: string;
 	replies: "" | {
@@ -33,6 +34,11 @@ export interface Comment {
 	score: number;
 	score_hidden: boolean;
 	stickied: boolean;
+}
+
+export interface Me {
+	modhash: string;
+	name: string;
 }
 
 export interface Post {

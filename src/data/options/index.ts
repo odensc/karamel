@@ -5,8 +5,9 @@ import { Action, ActionTypes, synced, update } from "./actions";
 import { State } from "./model";
 
 const initialState: State = {
+	commentSort: "best",
 	default: "reddit",
-	sort: "top"
+	postSort: "top"
 };
 
 export const reducer = (state = initialState, action: Action): State => {
@@ -24,7 +25,7 @@ const setAsObservable = Observable.bindCallback<object, never>(chrome.storage.sy
 
 export const epic = (actions$: ActionsObservable<Action>) => actions$
 	.ofType(ActionTypes.REQUEST, ActionTypes.UPDATE)
-	.switchMap<Action, Action>(action => {
+	.mergeMap(action => {
 		switch (action.type) {
 			case ActionTypes.REQUEST: {
 				return getAsObservable(initialState)

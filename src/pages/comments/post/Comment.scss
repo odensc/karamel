@@ -1,6 +1,5 @@
 .comment {
 	display: flex;
-	flex-direction: column;
 	margin-bottom: 10px;
 	margin-left: 10px;
 	max-width: 100%;
@@ -14,8 +13,42 @@
 			}
 		}
 
-		.body, .children, .footer {
+		.body, .children, .footer, .vote {
 			display: none;
+		}
+	}
+}
+
+.content {
+	flex-direction: column;
+	max-width: calc(100% - 22px);
+}
+
+.vote {
+	display: flex;
+	flex-direction: column;
+	margin-right: 7px;
+
+	.down, .up {
+		background: url("assets/vote.png") no-repeat;
+		margin-top: 2px;
+		min-height: 15px;
+		min-width: 15px;
+	}
+
+	.up {
+		background-position: -30px 0;
+
+		&.active {
+			background-position: -45px 0;
+		}
+	}
+
+	.down {
+		background-position: 0 0;
+
+		&.active {
+			background-position: -15px 0;
 		}
 	}
 }

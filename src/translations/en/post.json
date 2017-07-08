@@ -2,5 +2,15 @@
 	"by": "by",
 	"loading": "Loading...",
 	"noComments": "No comments!",
+	"sort": {
+		"best": "best",
+		"top": "top",
+		"new": "new",
+		"controversial": "controversial",
+		"old": "old",
+		"random": "random",
+		"qa": "q&a",
+		"live": "live"
+	},
 	"sortedBy": "sorted by"
 }

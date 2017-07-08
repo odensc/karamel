@@ -1,9 +1,11 @@
 import { TypedAction } from "data";
-import { Comment, Post } from "./";
+import { Comment, Me, Post } from "./";
 
 export enum ActionTypes {
 	RECEIVE_COMMENTS = "reddit/RECEIVE_COMMENTS",
 	REQUEST_COMMENTS = "reddit/REQUEST_COMMENTS",
+	REQUEST_ME = "reddit/REQUEST_ME",
+	RECEIVE_ME = "reddit/RECEIVE_ME",
 	RECEIVE_MORE_COMMENTS = "reddit/RECEIVE_MORE_COMMENTS",
 	REQUEST_MORE_COMMENTS = "reddit/REQUEST_MORE_COMMENTS",
 	RECEIVE_POSTS = "reddit/RECEIVE_POSTS",
@@ -20,8 +22,17 @@ interface ReceiveCommentsAction extends TypedAction<ActionTypes.RECEIVE_COMMENTS
 interface RequestCommentsAction extends TypedAction<ActionTypes.REQUEST_COMMENTS> {
 	payload: {
 		linkId: string;
+		sort: string;
 	};
 }
+
+interface ReceiveMeAction extends TypedAction<ActionTypes.RECEIVE_ME> {
+	payload: {
+		me?: Me;
+	};
+}
+
+interface RequestMeAction extends TypedAction<ActionTypes.REQUEST_ME> { }
 
 interface ReceiveMoreCommentsAction extends TypedAction<ActionTypes.RECEIVE_MORE_COMMENTS> {
 	payload: {
@@ -29,6 +40,7 @@ interface ReceiveMoreCommentsAction extends TypedAction<ActionTypes.RECEIVE_MORE
 		id: string;
 		linkId: string;
 		parentId: string;
+		prepend?: boolean;
 	};
 }
 
@@ -44,7 +56,6 @@ interface RequestMoreCommentsAction extends TypedAction<ActionTypes.REQUEST_MORE
 
 interface ReceivePostsAction extends TypedAction<ActionTypes.RECEIVE_POSTS> {
 	payload: {
-		modhash: string;
 		posts: Post[];
 	};
 }
@@ -59,6 +70,8 @@ interface RequestPostsAction extends TypedAction<ActionTypes.REQUEST_POSTS> {
 export type Action =
 	| ReceiveCommentsAction
 	| RequestCommentsAction
+	| ReceiveMeAction
+	| RequestMeAction
 	| ReceiveMoreCommentsAction
 	| RequestMoreCommentsAction
 	| ReceivePostsAction
@@ -69,9 +82,18 @@ export const receiveComments = (comments: Comment[], linkId: string): ReceiveCom
 	payload: { comments, linkId }
 });
 
-export const requestComments = (linkId: string): RequestCommentsAction => ({
+export const requestComments = (linkId: string, sort: string): RequestCommentsAction => ({
 	type: ActionTypes.REQUEST_COMMENTS,
-	payload: { linkId }
+	payload: { linkId, sort }
+});
+
+export const receiveMe = (me?: Me): ReceiveMeAction => ({
+	type: ActionTypes.RECEIVE_ME,
+	payload: { me }
+});
+
+export const requestMe = (): RequestMeAction => ({
+	type: ActionTypes.REQUEST_ME
 });
 
 export const receiveMoreComments = (payload: ReceiveMoreCommentsAction["payload"]): ReceiveMoreCommentsAction => ({
@@ -84,9 +106,9 @@ export const requestMoreComments = (payload: RequestMoreCommentsAction["payload"
 	payload
 });
 
-export const receivePosts = (modhash: string, posts: Post[]): ReceivePostsAction => ({
+export const receivePosts = (posts: Post[]): ReceivePostsAction => ({
 	type: ActionTypes.RECEIVE_POSTS,
-	payload: { modhash, posts }
+	payload: { posts }
 });
 
 export const requestPosts = (payload: RequestPostsAction["payload"]): RequestPostsAction => ({

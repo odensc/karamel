@@ -6,7 +6,7 @@ import { format } from "common/time";
 const UPDATE_INTERVAL = 10000;
 
 @translate("time")
-export class Time extends React.Component<TimeProps, {}> {
+export class Time extends React.PureComponent<TimeProps, {}> {
 	private intervalId: any;
 
 	componentDidMount() {

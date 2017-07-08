@@ -1,14 +1,13 @@
 import { ActionsObservable } from "redux-observable";
-import { getMoreChildren, getPost, search } from "common/reddit-api";
+import { getMe, getMoreChildren, getPost, search } from "common/reddit-api";
 import "common/rxjs";
 
-import { Action, ActionTypes, receiveComments, receiveMoreComments, receivePosts } from "./actions";
+import { Action, ActionTypes, receiveComments, receiveMe, receiveMoreComments, receivePosts } from "./actions";
 import { Comment, State } from "./model";
 
 const initialState: State = {
 	comments: {},
 	commentsLoading: false,
-	modhash: "",
 	moreCommentsLoading: [],
 	posts: [],
 	postsLoading: false
@@ -25,9 +24,10 @@ const findId = (comments: Comment[], id: string, currentChildren?: { data: Comme
 			if (
 				child
 				&& child.data
-				&& Array.isArray(child.data.replies)
+				&& child.data.replies
+				&& Array.isArray(child.data.replies.data.children)
 			) {
-				return findId(comments, id, child.data.replies);
+				return findId(comments, id, child.data.replies.data.children);
 			}
 		}
 
@@ -59,6 +59,10 @@ export const reducer = (state = initialState, action: Action): State => {
 			});
 		}
 
+		case ActionTypes.RECEIVE_ME: {
+			return Object.assign({}, state, { me: action.payload.me });
+		}
+
 		case ActionTypes.RECEIVE_MORE_COMMENTS: {
 			// TODO immutability?
 			const comments: Comment[] = state.comments[action.payload.linkId] || [];
@@ -66,13 +70,16 @@ export const reducer = (state = initialState, action: Action): State => {
 			if (!parent) {
 				delete comments[comments.findIndex(c => c && c.name === action.payload.id)];
 				comments.push(...action.payload.comments);
-			} else if (parent.replies) {
+			} else {
+				if (!parent.replies) parent.replies = { data: { children: [] } };
+
 				const children = parent.replies.data.children;
 				delete children[children.findIndex(({ data }) => data.name === action.payload.id)];
-				children.push(
-					...action.payload.comments
-						.map(c => ({ data: c }))
-				);
+
+				const addedChildren = action.payload.comments
+					.map(c => ({ data: c }));
+				if (!action.payload.prepend) children.push(...addedChildren);
+				else children.unshift(...addedChildren);
 			}
 
 			return Object.assign({}, state, {
@@ -86,7 +93,6 @@ export const reducer = (state = initialState, action: Action): State => {
 
 		case ActionTypes.RECEIVE_POSTS: {
 			return Object.assign({}, state, {
-				modhash: action.payload.modhash,
 				posts: action.payload.posts,
 				postsLoading: false
 			});
@@ -97,19 +103,28 @@ export const reducer = (state = initialState, action: Action): State => {
 };
 
 export const epic = (actions$: ActionsObservable<Action>) => actions$
-	.ofType(ActionTypes.REQUEST_COMMENTS, ActionTypes.REQUEST_MORE_COMMENTS, ActionTypes.REQUEST_POSTS)
-	.switchMap(action => {
+	.ofType(
+		ActionTypes.REQUEST_COMMENTS,
+		ActionTypes.REQUEST_ME,
+		ActionTypes.REQUEST_MORE_COMMENTS,
+		ActionTypes.REQUEST_POSTS
+	)
+	.mergeMap(action => {
 		switch (action.type) {
 			case ActionTypes.REQUEST_COMMENTS: {
-				return getPost(action.payload.linkId.replace("t3_", ""))
-					.map(res => res.response[1].data.children.map((c: any) => c.data))
+				return getPost(action.payload.linkId.replace("t3_", ""), action.payload.sort)
+					.map(res => res[1].data.children.map((c: any) => c.data))
 					.map(comments => receiveComments(comments, action.payload.linkId));
+			}
+
+			case ActionTypes.REQUEST_ME: {
+				return getMe()
+					.map(me => receiveMe(me));
 			}
 
 			case ActionTypes.REQUEST_MORE_COMMENTS: {
 				const { linkId, id, children, sort } = action.payload;
 				return getMoreChildren(linkId, id.replace("t1_", ""), children, sort)
-					.map(res => res.response.json.data.things.map((c: any) => c.data))
 					.map(comments => receiveMoreComments({
 						comments,
 						id: action.payload.id,
@@ -124,11 +139,7 @@ export const epic = (actions$: ActionsObservable<Action>) => actions$
 					sort: action.payload.sort,
 					type: "link"
 				})
-					.map(res => [
-						res.response.data.modhash,
-						res.response.data.children.map((c: any) => c.data)
-					])
-					.map(([modhash, posts]) => receivePosts(modhash, posts));
+					.map(posts => receivePosts(posts));
 			}
 
 			default: return [];
