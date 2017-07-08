@@ -47,8 +47,10 @@ export interface Post {
 	created_utc: number;
 	distinguished: string | null;
 	id: string;
+	likes: boolean | null;
 	name: string;
 	permalink: string;
+	saved: boolean;
 	score: number;
 	subreddit: string;
 	title: string;
