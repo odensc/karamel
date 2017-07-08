@@ -19,7 +19,7 @@ export function comment(modhash: string, parentId: string, text: string) {
 		thing_id: parentId,
 		uh: modhash
 	};
-	return ajax(`${BASE_URL}/api/comment?${stringify(query)}`, {
+	return ajax(`${BASE_URL}/api/comment.json?${stringify(query)}`, {
 		method: "POST"
 	});
 }
