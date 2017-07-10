@@ -33,14 +33,20 @@
 .item {
 	background: #f1f1f1;
 	border: 1px solid #ddd;
+	display: flex;
 	flex: 1;
 	font-size: 12px;
+	justify-content: center;
 	padding: 5px 10px;
 	transition: background 0.1s ease;
 
 	@at-root [dark] & {
 		background: #333;
 		border-color: #4a4a4a;
+	}
+
+	span {
+		color: #888;
 	}
 
 	&:not(:last-of-type) {
