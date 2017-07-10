@@ -49,6 +49,7 @@ export interface Post {
 	id: string;
 	likes: boolean | null;
 	name: string;
+	num_comments: number;
 	permalink: string;
 	saved: boolean;
 	score: number;
