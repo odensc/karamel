@@ -69,7 +69,9 @@ export const reducer = (state = initialState, action: Action): State => {
 			const parent = findId(comments, action.payload.parentId);
 			if (!parent) {
 				delete comments[comments.findIndex(c => c && c.name === action.payload.id)];
-				comments.push(...action.payload.comments);
+
+				if (!action.payload.prepend) comments.push(...action.payload.comments);
+				else comments.unshift(...action.payload.comments);
 			} else {
 				if (!parent.replies) parent.replies = { data: { children: [] } };
 
