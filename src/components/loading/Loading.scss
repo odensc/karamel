@@ -1,0 +1,27 @@
+.loading {
+	display: flex;
+	justify-content: center;
+	margin: 15px;
+	width: 100%;
+}
+
+.loading img {
+	animation: spin 2s infinite linear;
+	width: 28px;
+
+	@at-root [dark] & {
+		filter: invert(100%);
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(360deg);
+		//filter: invert(0%);
+	}
+
+	100% {
+		transform: rotate(0deg);
+		//filter: invert(0%)
+	}
+}
