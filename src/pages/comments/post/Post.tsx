@@ -1,5 +1,6 @@
 import React from "react";
 import { InjectedTranslateProps, translate } from "react-i18next";
+import { decode } from "he";
 
 import { Comment as RedditComment, Post as RedditPost } from "data/reddit";
 
@@ -45,7 +46,7 @@ export class Post extends React.Component<PostProps, {}> {
 					)}
 
 					<div className={style.headerContent}>
-						<a className={style.title} href={`https://reddit.com${post.permalink}`}>{post.title}</a>
+						<a className={style.title} href={`https://reddit.com${post.permalink}`}>{decode(post.title)}</a>
 
 						<p>
 							<Time created={post.created_utc} />
