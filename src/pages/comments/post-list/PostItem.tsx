@@ -4,7 +4,9 @@ import { Post } from "data/reddit";
 
 export const PostItem = ({ onClick, post, ...props }: PostListProps) => (
 	<button {...props} onClick={onClick}>
-		{post.subreddit} <span style={{color: "#888"}}>({post.num_comments})</span>
+		{post.subreddit}
+		&nbsp;
+		<span>({post.num_comments.toLocaleString()})</span>
 	</button>
 );
 
