@@ -48,11 +48,13 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 		return comment.count === undefined ? (
 			<div
 				className={classnames(style.comment, {
-					[style.collapsed]: this.state.collapsed
+					[style.collapsed]: this.state.collapsed,
+					[style.deleted]: comment.author === "[deleted]"
 				})}
 			>
 				{modhash && (
 					<Vote
+						className={style.vote}
 						id={comment.name}
 						likes={comment.likes}
 						modhash={modhash}
@@ -85,6 +87,7 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 					<div className={style.body} dangerouslySetInnerHTML={htmlBody} />
 
 					<Footer
+						className={style.footer}
 						id={comment.name}
 						linkId={post.name}
 						modhash={modhash}
