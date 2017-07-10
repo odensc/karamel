@@ -8,6 +8,7 @@ import { comment } from "common/reddit-api";
 import { returnOf } from "common/util";
 import { receiveMoreComments } from "data/reddit";
 
+import { ActionList } from "../ActionList";
 import style from "./Reply.scss";
 
 @translate("reply")
@@ -51,12 +52,12 @@ class Reply extends React.Component<ReplyProps, ReplyState> {
 			<div className={style.reply}>
 				<textarea onChange={this.onChange} value={this.state.text} />
 
-				<div className={style.buttons}>
+				<ActionList>
 					<button onClick={this.onClickSave}>{t("save")}</button>
 					<button onClick={this.props.onClose}>{t("cancel")}</button>
 					{this.state.error ? <p className={style.error}>{this.state.error}</p> : null}
 					{this.state.loading ? <p>{t("submitting")}</p> : null}
-				</div>
+				</ActionList>
 			</div>
 		);
 	}
