@@ -7,7 +7,6 @@ import { Comment as RedditComment, Post } from "data/reddit";
 
 import { Author } from "../Author";
 import { Footer } from "./Footer";
-import { Reply } from "./Reply";
 import { Time } from "../Time";
 import { Vote } from "./Vote";
 import style from "./Comment.scss";
@@ -16,7 +15,6 @@ import style from "./Comment.scss";
 export class Comment extends React.PureComponent<CommentProps, CommentState> {
 	state: CommentState = {
 		collapsed: false,
-		replyOpen: false,
 		score: 1
 	};
 
@@ -31,10 +29,6 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 
 	toggleCollapsed = () => {
 		this.setState({ collapsed: !this.state.collapsed });
-	}
-
-	toggleReply = () => {
-		this.setState({ replyOpen: !this.state.replyOpen });
 	}
 
 	componentDidMount() {
@@ -92,26 +86,14 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 
 					<Footer
 						id={comment.name}
+						linkId={post.name}
 						modhash={modhash}
 						permalink={`https://reddit.com${post.permalink.replace(/\?.*/, "")}${comment.id}`}
 						saved={comment.saved}
-					>
-						{modhash && (
-							<button onClick={this.toggleReply}>{t("footer:reply")}</button>
-						)}
-					</Footer>
+					/>
 
-					{(comment.replies || this.state.replyOpen) && (
+					{comment.replies && (
 						<div className={style.children}>
-							{this.state.replyOpen ? (
-								<Reply
-									modhash={modhash}
-									onClose={this.toggleReply}
-									linkId={post.name}
-									parentId={comment.name}
-								/>
-							) : null}
-
 							{comment.replies && comment.replies.data.children.map(({ data }) => (
 								<Comment
 									key={data.id}
@@ -155,6 +137,5 @@ export interface CommentProps extends InjectedTranslateProps {
 
 interface CommentState {
 	collapsed: boolean;
-	replyOpen: boolean;
 	score: number;
 }
