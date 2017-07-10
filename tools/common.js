@@ -23,7 +23,7 @@ module.exports = {
 					sourceMap: (process.env.NODE_ENV === "development" || process.env.PRODUCTION_DEBUG),
 					localIdentName: (process.env.NODE_ENV === "development" || process.env.PRODUCTION_DEBUG)
 						? "[name]__[local]--[hash:2]"
-						: "[hash:2]",
+						: "[hash:4]",
 					importLoaders: 1,
 					minimize: process.env.NODE_ENV === "production"
 				}
