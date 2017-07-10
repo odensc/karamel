@@ -7,6 +7,7 @@ import { returnOf } from "common/util";
 import { State } from "data";
 import { Post as RedditPost, requestComments, requestMoreComments, requestPosts } from "data/reddit";
 
+import { Loading } from "components/loading";
 import { Post } from "./post";
 import { PostList } from "./post-list";
 import style from "./Comments.scss";
@@ -50,7 +51,7 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 	}
 
 	render() {
-		const { commentsLoading } = this.props;
+		const { commentsLoading, postsLoading } = this.props;
 		const { post } = this.state;
 
 		return (
@@ -61,7 +62,7 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 					posts={this.props.posts}
 				/>
 
-				{post && (
+				{(!postsLoading && post) ? (
 					<Post
 						comments={this.props.comments[post.name] || []}
 						commentsLoading={commentsLoading}
@@ -72,6 +73,8 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 						post={post}
 						sort={this.state.sort[post.name] || "best"}
 					/>
+				) : (
+					<Loading />
 				)}
 			</section>
 		);
@@ -89,7 +92,8 @@ const mapStateToProps = (state: State) => ({
 	commentsLoading: state.reddit.commentsLoading,
 	modhash: state.reddit.me ? state.reddit.me.modhash : "",
 	moreCommentsLoading: state.reddit.moreCommentsLoading,
-	posts: state.reddit.posts
+	posts: state.reddit.posts,
+	postsLoading: state.reddit.postsLoading
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
