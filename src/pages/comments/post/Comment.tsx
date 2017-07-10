@@ -77,7 +77,7 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 						&nbsp;
 						<p className={style.score}>
 							{comment.score_hidden
-								? t("score_hidden")
+								? `[${t("score_hidden")}]`
 								: t("score", { count: score })}
 						</p>
 						&nbsp;
