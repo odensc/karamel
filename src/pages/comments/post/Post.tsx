@@ -5,8 +5,9 @@ import { decode } from "he";
 import { Comment as RedditComment, Post as RedditPost } from "data/reddit";
 
 import { Author } from "../Author";
-import { Footer } from "./Footer";
 import { Comment } from "./Comment";
+import { Footer } from "./Footer";
+import { Loading } from "components/loading";
 import { Time } from "../Time";
 import { Vote } from "./Vote";
 import style from "./Post.scss";
@@ -65,11 +66,7 @@ export class Post extends React.Component<PostProps, {}> {
 							modhash={modhash}
 							permalink={`https://reddit.com${post.permalink}`}
 							saved={post.saved}
-						>
-							{/*modhash && (
-								<button onClick={this.toggleReply}>{t("footer:reply")}</button>
-							)*/}
-						</Footer>
+						/>
 					</div>
 				</header>
 
@@ -101,7 +98,7 @@ export class Post extends React.Component<PostProps, {}> {
 							<h2 className={style.loading}>{t("noComments")}</h2>
 						)
 					) : (
-						<h2 className={style.loading}>{t("loading")}</h2>
+						<Loading />
 					)}
 				</div>
 			</div>
