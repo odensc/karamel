@@ -16,12 +16,12 @@
 		.tagline {
 			font-style: italic;
 
-			.collapse, .author a, .author span, .score, .time {
+			.collapse, .author a, .score, .time {
 				color: #808080;
 			}
 		}
 
-		.body, .children {
+		.author span, .body, .children {
 			display: none;
 		}
 	}
