@@ -2,7 +2,15 @@
 	display: flex;
 	margin-bottom: 10px;
 	margin-left: 10px;
-	max-width: 100%;
+	min-width: 100%;
+
+	&.collapsed, &.deleted {
+		margin-left: 32px;
+
+		.footer, .vote {
+			display: none;
+		}
+	}
 
 	&.collapsed {
 		.tagline {
@@ -13,7 +21,7 @@
 			}
 		}
 
-		.body, .children, .footer, .vote {
+		.body, .children {
 			display: none;
 		}
 	}
@@ -21,7 +29,7 @@
 
 .content {
 	flex-direction: column;
-	max-width: calc(100% - 22px);
+	max-width: calc(100% - 32px);
 }
 
 .loadMore {
@@ -81,6 +89,28 @@
 	a {
 		color: #0079d3;
 		text-decoration: none;
+	}
+
+	blockquote, p, pre > code, th, td, li, ul, ol {
+		line-height: 20px;
+
+		&:not(:first-child) {
+			margin-top: 5px;
+		}
+	}
+
+	ul, ol {
+		padding-left: 40px;
+	}
+
+	blockquote {
+		border-left: 2px solid #c5c1ad;
+		margin-left: 5px;
+		padding-left: 8px;
+
+		@at-root [dark] & {
+			border-left-color: #777;
+		}
 	}
 }
 
