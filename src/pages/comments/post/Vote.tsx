@@ -5,11 +5,9 @@ import { vote } from "common/reddit-api";
 
 import style from "./Vote.scss";
 
+// TODO: Cleanup using proper Redux state.
 export class Vote extends React.PureComponent<VoteProps, VoteState> {
-	state: VoteState = {
-		likes: null,
-		score: 1
-	};
+	state: VoteState = {};
 
 	formatScore(score: number) {
 		if (score < 10000) return score;
@@ -24,38 +22,43 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 		return originalScore - (originalLikes === true ? 1 : (originalLikes === false ? -1 : 0));
 	}
 
-	onScoreChange = (score: number) => {
-		this.setState({ score });
+	onScoreChange = (likes: boolean | null, score: number) => {
+		this.setState({
+			[this.props.id]: {
+				likes,
+				score
+			}
+		});
 		if (this.props.onScoreChange) this.props.onScoreChange(score);
 	}
 
 	vote = async (dir: number) => {
 		const { id, modhash, score } = this.props;
-		const { likes } = this.state;
+		const { likes } = this.state[id];
 		const trueScore = this.getTrueScore();
+		let newLikes = null;
 		let newScore = 0;
 
 		if ((dir === -1 && likes === false) || (dir === 1 && likes === true)) dir = 0;
 
 		if (dir === -1) {
-			this.setState({ likes: false });
+			newLikes = false;
 			newScore = trueScore - 1;
 		} else if (dir === 1) {
-			this.setState({ likes: true });
+			newLikes = true;
 			newScore = trueScore + 1;
 		} else if (dir === 0) {
-			this.setState({ likes: null });
+			newLikes = null;
 			newScore = trueScore;
 		}
 
-		this.onScoreChange(newScore);
+		this.onScoreChange(newLikes, newScore);
 
 		try {
 			await vote(modhash, id, dir).toPromise();
 		} catch (err) {
 			// If there was an error voting, set back to previous like state.
-			this.setState({ likes });
-			this.onScoreChange(score);
+			this.onScoreChange(likes, score);
 		}
 	}
 
@@ -63,17 +66,17 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 
 	voteUp = () => this.vote(1);
 
+	componentWillMount() {
+		this.updateState(this.props);
+	}
+
 	componentWillReceiveProps(nextProps: VoteProps) {
-		const { likes, score } = nextProps;
-		this.setState({
-			likes,
-			score
-		});
+		this.updateState(nextProps);
 	}
 
 	render(): JSX.Element | null {
-		const { className, showScore } = this.props;
-		const { likes, score } = this.state;
+		const { className, id, showScore } = this.props;
+		const { likes, score } = this.state[id];
 
 		return (
 			<div
@@ -98,6 +101,18 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 			</div>
 		);
 	}
+
+	private updateState(props: VoteProps) {
+		const { likes, id, score } = props;
+		if (this.state[id]) return;
+
+		this.setState({
+			[id]: {
+				likes,
+				score
+			}
+		});
+	}
 }
 
 export interface VoteProps extends React.HTMLProps<HTMLDivElement> {
@@ -110,6 +125,8 @@ export interface VoteProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 interface VoteState {
-	likes: boolean | null;
-	score: number;
+	[id: string]: {
+		likes: boolean | null;
+		score: number;
+	};
 }

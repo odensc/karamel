@@ -13,7 +13,7 @@ import { Vote } from "./Vote";
 import style from "./Post.scss";
 
 @translate("post")
-export class Post extends React.Component<PostProps, {}> {
+export class Post extends React.PureComponent<PostProps, {}> {
 	loadMore = (parentId: string, linkId: string, id: string, children: string[]) => {
 		this.props.loadMore(parentId, linkId, id, children, this.props.sort);
 	}
