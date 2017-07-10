@@ -12,6 +12,10 @@
 	}
 }
 
+.footer {
+	margin-top: 2px;
+}
+
 .content {
 	flex-direction: column;
 }
@@ -46,4 +50,5 @@
 
 .headerContent {
 	flex-direction: column;
+	width: 100%;
 }

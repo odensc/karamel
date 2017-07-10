@@ -11,7 +11,7 @@ import { Time } from "../Time";
 import { Vote } from "./Vote";
 import style from "./Post.scss";
 
-@translate(["post", "time"])
+@translate("post")
 export class Post extends React.Component<PostProps, {}> {
 	loadMore = (parentId: string, linkId: string, id: string, children: string[]) => {
 		this.props.loadMore(parentId, linkId, id, children, this.props.sort);
@@ -59,7 +59,9 @@ export class Post extends React.Component<PostProps, {}> {
 						</p>
 
 						<Footer
+							className={style.footer}
 							id={post.name}
+							linkId={post.name}
 							modhash={modhash}
 							permalink={`https://reddit.com${post.permalink}`}
 							saved={post.saved}
