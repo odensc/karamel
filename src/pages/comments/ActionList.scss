@@ -1,0 +1,20 @@
+.list {
+	color: #888;
+	display: flex;
+    font-weight: bold;
+	list-style: none;
+
+	li {
+		padding-right: 8px;
+
+		a, button {
+			color: inherit;
+			padding: 0 1px;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
