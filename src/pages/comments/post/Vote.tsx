@@ -11,6 +11,13 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 		score: 1
 	};
 
+	formatScore(score: number) {
+		if (score < 10000) return score;
+
+		const thousands = score / 1000;
+		return `${thousands.toFixed(thousands < 100 ? 1 : 0)}k`;
+	}
+
 	getTrueScore() {
 		const originalLikes = this.props.likes;
 		const originalScore = this.props.score;
@@ -56,8 +63,8 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 
 	voteUp = () => this.vote(1);
 
-	componentDidMount() {
-		const { likes, score } = this.props;
+	componentWillReceiveProps(nextProps: VoteProps) {
+		const { likes, score } = nextProps;
 		this.setState({
 			likes,
 			score
@@ -65,12 +72,12 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 	}
 
 	render(): JSX.Element | null {
-		const { showScore } = this.props;
+		const { className, showScore } = this.props;
 		const { likes, score } = this.state;
 
 		return (
 			<div
-				className={classnames(style.vote, {
+				className={classnames(style.vote, className, {
 					[style.downActive]: likes === false,
 					[style.upActive]: likes === true
 				})}
@@ -81,7 +88,7 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 				/>
 
 				{showScore && (
-					<span className={style.score}>{score}</span>
+					<span className={style.score}>{this.formatScore(score)}</span>
 				)}
 
 				<button
@@ -93,7 +100,7 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 	}
 }
 
-export interface VoteProps {
+export interface VoteProps extends React.HTMLProps<HTMLDivElement> {
 	id: string;
 	likes: boolean | null;
 	modhash: string;
