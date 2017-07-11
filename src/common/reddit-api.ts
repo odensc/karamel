@@ -79,7 +79,6 @@ export function vote(modhash: string, id: string, dir: number) {
 		`${BASE_URL}/api/vote.json?${stringify(query)}`, {
 		method: "POST"
 	});
-		// .switchMap(handleJsonError(res => res.things[0].data));
 }
 
 interface QuerySearch {
