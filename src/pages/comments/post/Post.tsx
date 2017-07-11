@@ -36,15 +36,13 @@ export class Post extends React.PureComponent<PostProps, {}> {
 		return (
 			<div className={style.post}>
 				<header className={style.header}>
-					{modhash && (
-						<Vote
-							id={post.name}
-							likes={post.likes}
-							modhash={modhash}
-							score={post.score}
-							showScore
-						/>
-					)}
+					<Vote
+						id={post.name}
+						likes={post.likes}
+						modhash={post.archived ? "" : modhash}
+						score={post.score}
+						showScore
+					/>
 
 					<div className={style.headerContent}>
 						<a className={style.title} href={`https://reddit.com${post.permalink}`}>{decode(post.title)}</a>
@@ -70,7 +68,7 @@ export class Post extends React.PureComponent<PostProps, {}> {
 					</div>
 				</header>
 
-				<div className={style.comments}>
+				<div>
 					<div className={style.sort}>
 						{t("sortedBy")}:
 						&nbsp;

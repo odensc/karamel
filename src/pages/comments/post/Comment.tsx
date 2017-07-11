@@ -52,16 +52,14 @@ export class Comment extends React.PureComponent<CommentProps, CommentState> {
 					[style.deleted]: comment.author === "[deleted]"
 				})}
 			>
-				{modhash && (
-					<Vote
-						className={style.vote}
-						id={comment.name}
-						likes={comment.likes}
-						modhash={modhash}
-						onScoreChange={this.onScoreChange}
-						score={comment.score}
-					/>
-				)}
+				<Vote
+					className={style.vote}
+					id={comment.name}
+					likes={comment.likes}
+					modhash={comment.archived ? "" : modhash}
+					onScoreChange={this.onScoreChange}
+					score={comment.score}
+				/>
 
 				<div className={style.content}>
 					<div className={style.tagline}>
