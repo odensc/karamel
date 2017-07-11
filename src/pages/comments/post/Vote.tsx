@@ -75,13 +75,14 @@ export class Vote extends React.PureComponent<VoteProps, VoteState> {
 	}
 
 	render(): JSX.Element | null {
-		const { className, id, showScore } = this.props;
+		const { className, id, modhash, showScore } = this.props;
 		const { likes, score } = this.state[id];
 
 		return (
 			<div
 				className={classnames(style.vote, className, {
 					[style.downActive]: likes === false,
+					[style.noArrows]: !modhash,
 					[style.upActive]: likes === true
 				})}
 			>
