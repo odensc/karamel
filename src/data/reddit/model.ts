@@ -42,6 +42,7 @@ export interface Me {
 }
 
 export interface Post {
+	archived: boolean;
 	author: string;
 	author_flair_text: string | null;
 	created_utc: number;
