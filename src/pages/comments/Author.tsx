@@ -1,5 +1,6 @@
 import React from "react";
 import classnames from "classnames";
+import { decode } from "he";
 
 import style from "./Author.scss";
 
@@ -40,7 +41,7 @@ export const Author = ({ author, distinguished, flair, submitter, ...props }: Au
 
 			{flair && (
 				<span className={style.flair}>
-					{flair}
+					{decode(flair)}
 				</span>
 			)}
 
