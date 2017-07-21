@@ -3,40 +3,30 @@ import { connect } from "react-redux";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
 import { returnOf } from "common/util";
+import { State } from "data";
 import { update } from "data/video";
-import { getCurrentLayer } from "layer";
 
-const layer = getCurrentLayer();
+const CHECK_INTERVAL = 1000;
 
 class VideoListener extends React.Component<VideoListenerProps, {}> {
-	private description: HTMLElement;
-	private observer: MutationObserver;
+	private intervalId: any;
 
-	onDescriptionChange = () => {
+	checkLocation = () => {
 		const search = new URLSearchParams(location.search);
 		const id = search.get("v");
-		this.props.update({
-			id,
-			description: this.description.innerText
-		});
+		if (this.props.id !== id) {
+			this.props.update({ id });
+		}
 	}
 
 	componentDidMount() {
-		this.description = document.querySelector(layer.getVideoDescriptionQuery()) as HTMLElement;
-		this.observer = new MutationObserver(this.onDescriptionChange);
-		this.observer.observe(this.description, {
-			attributes: true,
-			characterData: true,
-			childList: true,
-			subtree: true
-		});
-
+		this.intervalId = setInterval(this.checkLocation, CHECK_INTERVAL);
 		// Trigger initial video state hydration.
-		this.onDescriptionChange();
+		this.checkLocation();
 	}
 
 	componentWillUnmount() {
-		this.observer.disconnect();
+		clearInterval(this.intervalId);
 	}
 
 	render() {
@@ -48,11 +38,16 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
 	update
 }, dispatch);
 
-export type VideoListenerProps = typeof DispatchProps;
+const mapStateToProps = (state: State) => ({
+	id: state.video.id
+});
+
+export type VideoListenerProps = typeof StateProps & typeof DispatchProps;
+const StateProps = returnOf(mapStateToProps);
 const DispatchProps = returnOf(mapDispatchToProps);
 
-const ConnectedVideoListener = connect<{}, typeof DispatchProps, {}>(
-	null,
+const ConnectedVideoListener = connect<typeof StateProps, typeof DispatchProps, {}>(
+	mapStateToProps,
 	mapDispatchToProps
 )(VideoListener);
 export { ConnectedVideoListener as VideoListener };

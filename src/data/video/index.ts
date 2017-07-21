@@ -9,8 +9,7 @@ import { Action, ActionTypes } from "./actions";
 import { State } from "./model";
 
 const initialState: State = {
-	id: null,
-	description: null
+	id: null
 };
 
 export const reducer = (state = initialState, action: Action): State => {
