@@ -27,6 +27,7 @@
 		"clean-webpack-plugin": "^0.1.16",
 		"copy-webpack-plugin": "^4.0.1",
 		"css-loader": "^0.28.4",
+		"css-loader-minify-class": "^1.1.0",
 		"file-loader": "^0.11.2",
 		"fork-ts-checker-webpack-plugin": "^0.2.4",
 		"friendly-errors-webpack-plugin": "^1.6.1",
