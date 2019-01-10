@@ -9,17 +9,21 @@ export enum ActionTypes {
 	RECEIVE_MORE_COMMENTS = "reddit/RECEIVE_MORE_COMMENTS",
 	REQUEST_MORE_COMMENTS = "reddit/REQUEST_MORE_COMMENTS",
 	RECEIVE_POSTS = "reddit/RECEIVE_POSTS",
-	REQUEST_POSTS = "reddit/REQUEST_POSTS"
+	REQUEST_POSTS = "reddit/REQUEST_POSTS",
+	RECEIVE_VOTE = "reddit/RECEIVE_VOTE",
+	REQUEST_VOTE = "reddit/REQUEST_VOTE"
 }
 
-interface ReceiveCommentsAction extends TypedAction<ActionTypes.RECEIVE_COMMENTS> {
+interface ReceiveCommentsAction
+	extends TypedAction<ActionTypes.RECEIVE_COMMENTS> {
 	payload: {
 		comments: Comment[];
 		linkId: string;
 	};
 }
 
-interface RequestCommentsAction extends TypedAction<ActionTypes.REQUEST_COMMENTS> {
+interface RequestCommentsAction
+	extends TypedAction<ActionTypes.REQUEST_COMMENTS> {
 	payload: {
 		linkId: string;
 		sort: string;
@@ -32,9 +36,10 @@ interface ReceiveMeAction extends TypedAction<ActionTypes.RECEIVE_ME> {
 	};
 }
 
-interface RequestMeAction extends TypedAction<ActionTypes.REQUEST_ME> { }
+interface RequestMeAction extends TypedAction<ActionTypes.REQUEST_ME> {}
 
-interface ReceiveMoreCommentsAction extends TypedAction<ActionTypes.RECEIVE_MORE_COMMENTS> {
+interface ReceiveMoreCommentsAction
+	extends TypedAction<ActionTypes.RECEIVE_MORE_COMMENTS> {
 	payload: {
 		comments: Comment[];
 		id: string;
@@ -44,7 +49,8 @@ interface ReceiveMoreCommentsAction extends TypedAction<ActionTypes.RECEIVE_MORE
 	};
 }
 
-interface RequestMoreCommentsAction extends TypedAction<ActionTypes.REQUEST_MORE_COMMENTS> {
+interface RequestMoreCommentsAction
+	extends TypedAction<ActionTypes.REQUEST_MORE_COMMENTS> {
 	payload: {
 		children: string[];
 		id: string;
@@ -67,6 +73,22 @@ interface RequestPostsAction extends TypedAction<ActionTypes.REQUEST_POSTS> {
 	};
 }
 
+interface ReceiveVoteAction extends TypedAction<ActionTypes.RECEIVE_VOTE> {
+	payload: {
+		dir: number;
+		id: string;
+		linkId: string;
+	};
+}
+
+interface RequestVoteAction extends TypedAction<ActionTypes.REQUEST_VOTE> {
+	payload: {
+		dir: number;
+		id: string;
+		linkId: string;
+	};
+}
+
 export type Action =
 	| ReceiveCommentsAction
 	| RequestCommentsAction
@@ -75,14 +97,22 @@ export type Action =
 	| ReceiveMoreCommentsAction
 	| RequestMoreCommentsAction
 	| ReceivePostsAction
-	| RequestPostsAction;
+	| RequestPostsAction
+	| ReceiveVoteAction
+	| RequestVoteAction;
 
-export const receiveComments = (comments: Comment[], linkId: string): ReceiveCommentsAction => ({
+export const receiveComments = (
+	comments: Comment[],
+	linkId: string
+): ReceiveCommentsAction => ({
 	type: ActionTypes.RECEIVE_COMMENTS,
 	payload: { comments, linkId }
 });
 
-export const requestComments = (linkId: string, sort: string): RequestCommentsAction => ({
+export const requestComments = (
+	linkId: string,
+	sort: string
+): RequestCommentsAction => ({
 	type: ActionTypes.REQUEST_COMMENTS,
 	payload: { linkId, sort }
 });
@@ -96,12 +126,16 @@ export const requestMe = (): RequestMeAction => ({
 	type: ActionTypes.REQUEST_ME
 });
 
-export const receiveMoreComments = (payload: ReceiveMoreCommentsAction["payload"]): ReceiveMoreCommentsAction => ({
+export const receiveMoreComments = (
+	payload: ReceiveMoreCommentsAction["payload"]
+): ReceiveMoreCommentsAction => ({
 	type: ActionTypes.RECEIVE_MORE_COMMENTS,
 	payload
 });
 
-export const requestMoreComments = (payload: RequestMoreCommentsAction["payload"]): RequestMoreCommentsAction => ({
+export const requestMoreComments = (
+	payload: RequestMoreCommentsAction["payload"]
+): RequestMoreCommentsAction => ({
 	type: ActionTypes.REQUEST_MORE_COMMENTS,
 	payload
 });
@@ -111,7 +145,23 @@ export const receivePosts = (posts: Post[]): ReceivePostsAction => ({
 	payload: { posts }
 });
 
-export const requestPosts = (payload: RequestPostsAction["payload"]): RequestPostsAction => ({
+export const requestPosts = (
+	payload: RequestPostsAction["payload"]
+): RequestPostsAction => ({
 	type: ActionTypes.REQUEST_POSTS,
+	payload
+});
+
+export const receiveVote = (
+	payload: ReceiveVoteAction["payload"]
+): ReceiveVoteAction => ({
+	type: ActionTypes.RECEIVE_VOTE,
+	payload
+});
+
+export const requestVote = (
+	payload: RequestVoteAction["payload"]
+): RequestVoteAction => ({
+	type: ActionTypes.REQUEST_VOTE,
 	payload
 });

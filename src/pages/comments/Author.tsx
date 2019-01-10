@@ -1,13 +1,15 @@
-import React from "react";
 import classnames from "classnames";
 import { decode } from "he";
+import React from "react";
 
 import style from "./Author.scss";
 
-const attrMap: { [key: string]: {
-	class: string;
-	letter: string;
-} } = {
+const attrMap: {
+	[key: string]: {
+		class: string;
+		letter: string;
+	};
+} = {
 	admin: {
 		class: style.admin,
 		letter: "A"
@@ -22,7 +24,13 @@ const attrMap: { [key: string]: {
 	}
 };
 
-export const Author = ({ author, distinguished, flair, submitter, ...props }: AuthorProps) => {
+export const Author = ({
+	author,
+	distinguished,
+	flair,
+	submitter,
+	...props
+}: AuthorProps) => {
 	const ids = distinguished ? [distinguished] : [];
 	if (submitter) ids.push("submitter");
 
@@ -39,24 +47,17 @@ export const Author = ({ author, distinguished, flair, submitter, ...props }: Au
 				{author}
 			</a>
 
-			{flair && (
-				<span className={style.flair}>
-					{decode(flair)}
-				</span>
-			)}
+			{flair && <span className={style.flair}>{decode(flair)}</span>}
 
 			{attrs.length > 0 ? (
 				<span>
 					[
-						{attrs.map((attr, index) => (
-							<span
-								key={attr.class}
-								className={attr.class}
-							>
-								{attr.letter}
-								{(index !== attrs.length - 1) && ","}
-							</span>
-						))}
+					{attrs.map((attr, index) => (
+						<span key={attr.class} className={attr.class}>
+							{attr.letter}
+							{index !== attrs.length - 1 && ","}
+						</span>
+					))}
 					]
 				</span>
 			) : null}

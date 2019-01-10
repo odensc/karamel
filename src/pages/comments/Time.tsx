@@ -1,5 +1,5 @@
 import React from "react";
-import { translate } from "react-i18next";
+import { InjectedTranslateProps, translate } from "react-i18next";
 
 import { format } from "common/time";
 
@@ -18,16 +18,30 @@ export class Time extends React.PureComponent<TimeProps, {}> {
 	}
 
 	render() {
-		const { created } = this.props;
+		const { created, edited, t } = this.props;
+
 		const age = (Date.now() / 1000) - created;
 		const date = new Date(created * 1000);
+		const ageEdited = (Date.now() / 1000) - (edited || 0);
+		const dateEdited = new Date((edited || 0) * 1000);
 
 		return (
-			<time title={date.toLocaleString()} dateTime={date.toISOString()}>{format(age)}</time>
+			<span>
+				<time title={date.toLocaleString()} dateTime={date.toISOString()}>
+					{format(age)}
+				</time>
+
+				{edited && (
+					<time title={dateEdited.toLocaleString()} dateTime={dateEdited.toISOString()}>
+						* ({t!("edited", { time: format(ageEdited) })})
+					</time>
+				)}
+			</span>
 		);
 	}
 }
 
-interface TimeProps {
+interface TimeProps extends InjectedTranslateProps {
 	created: number;
+	edited?: number | false;
 }

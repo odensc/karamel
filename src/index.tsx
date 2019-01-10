@@ -1,13 +1,13 @@
 import createHistory from "history/createMemoryHistory";
 import React from "react";
 import { render } from "react-dom";
-import { Provider } from "react-redux";
 import { I18nextProvider } from "react-i18next";
+import { Provider } from "react-redux";
 
 import i18n from "common/i18n";
-import configureStore from "store/configureStore";
 import { getCurrentLayer } from "layer";
 import Router from "router";
+import configureStore from "store/configureStore";
 import "styles/global.scss";
 
 const history = createHistory();
@@ -25,10 +25,10 @@ const renderRoot = (mountElement: HTMLElement) => {
 	);
 };
 
-const insertMountElement = (target: Element) => {
+const insertMountElement = (before: Element) => {
 	const element = document.createElement("div");
 	element.id = "tube-mount";
-	target.insertBefore(element, target.firstChild);
+	before.parentNode!.insertBefore(element, before);
 
 	return element;
 };
@@ -37,7 +37,9 @@ const observer = new MutationObserver(() => {
 	if (document.querySelector(layer.getWatchQuery())) {
 		observer.disconnect();
 
-		const mount = insertMountElement(document.querySelector(layer.getMountElementQuery())!);
+		const mount = insertMountElement(
+			document.querySelector(layer.getCommentsContainerQuery())!
+		);
 		renderRoot(mount);
 	}
 });

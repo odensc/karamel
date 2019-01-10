@@ -9,5 +9,7 @@
 	"hour_plural": "{{count}} hours ago",
 	"minute": "a minute ago",
 	"minute_plural": "{{count}} minutes ago",
-	"now": "just now"
+	"now": "just now",
+
+	"edited": "last edited {{time}}"
 }

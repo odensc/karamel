@@ -3,7 +3,6 @@ import OldLayer from "./old";
 
 export interface CompatLayer {
 	getWatchQuery(): string;
-	getMountElementQuery(): string;
 	getCommentsContainerQuery(): string;
 	getVideoDescriptionQuery(): string;
 }

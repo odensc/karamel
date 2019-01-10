@@ -1,6 +1,6 @@
-import React from "react";
-import { History } from "history";
 import { ConnectedRouter } from "connected-react-router";
+import { History } from "history";
+import React from "react";
 
 import { App } from "components/app";
 

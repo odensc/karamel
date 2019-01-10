@@ -12,7 +12,7 @@ import { ActionList } from "../ActionList";
 import style from "./Reply.scss";
 
 @translate("reply")
-class Reply extends React.Component<ReplyProps, ReplyState> {
+class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 	state = {
 		error: "",
 		loading: false,
@@ -63,10 +63,10 @@ class Reply extends React.Component<ReplyProps, ReplyState> {
 	}
 }
 
-interface OwnProps {
+export interface ReplyProps extends InjectedTranslateProps {
+	linkId: string;
 	modhash: string;
 	onClose: () => void;
-	linkId: string;
 	parentId: string;
 }
 
@@ -80,10 +80,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
 	receiveMoreComments
 }, dispatch);
 
-export type ReplyProps = typeof DispatchProps & OwnProps & InjectedTranslateProps;
+type ReduxProps = typeof DispatchProps;
 const DispatchProps = returnOf(mapDispatchToProps);
 
-const ConnectedReply = connect<{}, typeof DispatchProps, OwnProps>(
+const ConnectedReply = connect<{}, typeof DispatchProps, ReplyProps>(
 	null,
 	mapDispatchToProps
 )(Reply);

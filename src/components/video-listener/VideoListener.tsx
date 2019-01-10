@@ -8,7 +8,7 @@ import { update } from "data/video";
 
 const CHECK_INTERVAL = 1000;
 
-class VideoListener extends React.Component<VideoListenerProps, {}> {
+class VideoListener extends React.Component<VideoListenerProps & ReduxProps, {}> {
 	private intervalId: any;
 
 	checkLocation = () => {
@@ -34,6 +34,8 @@ class VideoListener extends React.Component<VideoListenerProps, {}> {
 	}
 }
 
+export interface VideoListenerProps { }
+
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
 	update
 }, dispatch);
@@ -42,11 +44,11 @@ const mapStateToProps = (state: State) => ({
 	id: state.video.id
 });
 
-export type VideoListenerProps = typeof StateProps & typeof DispatchProps;
+type ReduxProps = typeof StateProps & typeof DispatchProps;
 const StateProps = returnOf(mapStateToProps);
 const DispatchProps = returnOf(mapDispatchToProps);
 
-const ConnectedVideoListener = connect<typeof StateProps, typeof DispatchProps, {}>(
+const ConnectedVideoListener = connect<typeof StateProps, typeof DispatchProps, VideoListenerProps>(
 	mapStateToProps,
 	mapDispatchToProps
 )(VideoListener);

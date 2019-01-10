@@ -2,15 +2,11 @@ import { CompatLayer } from "./";
 
 export default class NewLayer implements CompatLayer {
 	getWatchQuery() {
-		return ".ytd-comments";
-	}
-
-	getMountElementQuery() {
-		return "#comments";
+		return "#main";
 	}
 
 	getCommentsContainerQuery() {
-		return ".ytd-comments";
+		return "#comments";
 	}
 
 	getVideoDescriptionQuery() {

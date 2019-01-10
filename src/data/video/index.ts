@@ -18,16 +18,25 @@ export const reducer = (state = initialState, action: Action): State => {
 			return Object.assign({}, state, action.payload);
 		}
 
-		default: return state;
+		default:
+			return state;
 	}
 };
 
-export const epic = (actions$: ActionsObservable<Action>, store: MiddlewareAPI<GlobalState>) => actions$
-	.ofType(ActionTypes.UPDATE)
-	.map(action => requestPosts({
-		sort: store.getState().options.postSort,
-		videoId: action.payload.id!
-	}));
+export const epic = (
+	actions$: ActionsObservable<Action>,
+	store: MiddlewareAPI<GlobalState>
+) =>
+	actions$.ofType(ActionTypes.UPDATE).mergeMap(action =>
+		action.payload.id
+			? [
+					requestPosts({
+						sort: store.getState().options.postSort,
+						videoId: action.payload.id
+					})
+			  ]
+			: []
+	);
 
 export * from "./actions";
 export * from "./model";

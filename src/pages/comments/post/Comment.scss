@@ -4,10 +4,14 @@
 	margin-left: 10px;
 	min-width: 100%;
 
-	&.collapsed, &.deleted {
+	&.collapsed:not(.deleted) {
 		margin-left: 32px;
+	}
 
-		.footer, .vote {
+	&.collapsed,
+	&.deleted {
+		.footer,
+		.vote {
 			display: none;
 		}
 	}
@@ -16,15 +20,25 @@
 		.tagline {
 			font-style: italic;
 
-			.collapse, .author a, .score, .time {
+			.collapse,
+			.author a,
+			.score,
+			.time {
 				color: #808080;
 			}
 		}
 
-		.author span, .body, .children {
+		.author span,
+		.body,
+		.children {
 			display: none;
 		}
 	}
+}
+
+.score {
+	color: rgb(180, 180, 180);
+	font-weight: bold;
 }
 
 .content {
@@ -76,7 +90,7 @@
 .body {
 	color: #222;
 	font-size: 14px;
-	margin-bottom: 8px;
+	margin-bottom: 6px;
 
 	@at-root [dark] & {
 		color: #e3e3e3;
@@ -91,7 +105,14 @@
 		text-decoration: none;
 	}
 
-	blockquote, p, pre > code, th, td, li, ul, ol {
+	blockquote,
+	p,
+	pre > code,
+	th,
+	td,
+	li,
+	ul,
+	ol {
 		line-height: 20px;
 
 		&:not(:first-child) {
@@ -99,7 +120,8 @@
 		}
 	}
 
-	ul, ol {
+	ul,
+	ol {
 		padding-left: 40px;
 	}
 
@@ -115,7 +137,7 @@
 }
 
 .children {
-	border-left: 1px dotted #DDF;
+	border-left: 1px dotted #ddf;
 	margin-top: 10px;
 
 	@at-root [dark] & {

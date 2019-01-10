@@ -2,15 +2,11 @@ import { CompatLayer } from "./";
 
 export default class OldLayer implements CompatLayer {
 	getWatchQuery() {
-		return "#comment-section-renderer";
-	}
-
-	getMountElementQuery() {
-		return "#watch-discussion";
+		return ".watch-main-col";
 	}
 
 	getCommentsContainerQuery() {
-		return "#comment-section-renderer";
+		return "#watch-discussion";
 	}
 
 	getVideoDescriptionQuery() {

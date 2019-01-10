@@ -1,8 +1,24 @@
-import { ActionsObservable } from "redux-observable";
-import { getMe, getMoreChildren, getPost, search } from "common/reddit-api";
+import {
+	getMe,
+	getMoreChildren,
+	getPost,
+	search,
+	vote
+} from "common/reddit-api";
 import "common/rxjs";
+import { State as GlobalState } from "data";
+import { MiddlewareAPI } from "redux";
+import { ActionsObservable } from "redux-observable";
 
-import { Action, ActionTypes, receiveComments, receiveMe, receiveMoreComments, receivePosts } from "./actions";
+import {
+	Action,
+	ActionTypes,
+	receiveComments,
+	receiveMe,
+	receiveMoreComments,
+	receivePosts,
+	receiveVote
+} from "./actions";
 import { Comment, State } from "./model";
 
 const initialState: State = {
@@ -13,7 +29,11 @@ const initialState: State = {
 	postsLoading: false
 };
 
-const findId = (comments: Comment[], id: string, currentChildren?: { data: Comment }[]): Comment | undefined => {
+const findId = (
+	comments: Comment[],
+	id: string,
+	currentChildren?: { data: Comment }[]
+): Comment | undefined => {
 	if (!currentChildren) currentChildren = comments.map(c => ({ data: c }));
 
 	const found = currentChildren.find(c => c && c.data && c.data.name === id);
@@ -22,10 +42,10 @@ const findId = (comments: Comment[], id: string, currentChildren?: { data: Comme
 	} else {
 		for (const child of currentChildren) {
 			if (
-				child
-				&& child.data
-				&& child.data.replies
-				&& Array.isArray(child.data.replies.data.children)
+				child &&
+				child.data &&
+				child.data.replies &&
+				Array.isArray(child.data.replies.data.children)
 			) {
 				return findId(comments, id, child.data.replies.data.children);
 			}
@@ -42,7 +62,11 @@ export const reducer = (state = initialState, action: Action): State => {
 		}
 
 		case ActionTypes.REQUEST_MORE_COMMENTS: {
-			return Object.assign({}, state, { moreCommentsLoading: state.moreCommentsLoading.concat(action.payload.id) });
+			return Object.assign({}, state, {
+				moreCommentsLoading: state.moreCommentsLoading.concat(
+					action.payload.id
+				)
+			});
 		}
 
 		case ActionTypes.REQUEST_POSTS: {
@@ -64,24 +88,37 @@ export const reducer = (state = initialState, action: Action): State => {
 		}
 
 		case ActionTypes.RECEIVE_MORE_COMMENTS: {
-			// TODO immutability?
-			const comments: Comment[] = state.comments[action.payload.linkId] || [];
+			// TODO garbage code, probably has immutability issues
+			let comments: Comment[] =
+				state.comments[action.payload.linkId] || [];
 			const parent = findId(comments, action.payload.parentId);
 			if (!parent) {
-				delete comments[comments.findIndex(c => c && c.name === action.payload.id)];
+				delete comments[
+					comments.findIndex(c => c && c.name === action.payload.id)
+				];
 
-				if (!action.payload.prepend) comments.push(...action.payload.comments);
-				else comments.unshift(...action.payload.comments);
+				if (!action.payload.prepend)
+					comments = comments.concat(action.payload.comments);
+				else comments = action.payload.comments.concat(comments);
 			} else {
-				if (!parent.replies) parent.replies = { data: { children: [] } };
+				if (!parent.replies)
+					parent.replies = { data: { children: [] } };
 
-				const children = parent.replies.data.children;
-				delete children[children.findIndex(({ data }) => data.name === action.payload.id)];
+				let children = parent.replies.data.children;
+				delete children[
+					children.findIndex(
+						({ data }) => data.name === action.payload.id
+					)
+				];
 
-				const addedChildren = action.payload.comments
-					.map(c => ({ data: c }));
-				if (!action.payload.prepend) children.push(...addedChildren);
-				else children.unshift(...addedChildren);
+				const addedChildren = action.payload.comments.map(c => ({
+					data: c
+				}));
+				if (!action.payload.prepend)
+					children = children.concat(addedChildren);
+				else children = addedChildren.concat(children);
+
+				parent.replies.data.children = children;
 			}
 
 			return Object.assign({}, state, {
@@ -89,7 +126,9 @@ export const reducer = (state = initialState, action: Action): State => {
 					...state.comments,
 					[action.payload.linkId]: comments
 				},
-				moreCommentsLoading: state.moreCommentsLoading.filter(id => id !== action.payload.id)
+				moreCommentsLoading: state.moreCommentsLoading.filter(
+					id => id !== action.payload.id
+				)
 			});
 		}
 
@@ -100,53 +139,117 @@ export const reducer = (state = initialState, action: Action): State => {
 			});
 		}
 
-		default: return state;
+		case ActionTypes.RECEIVE_VOTE: {
+			const comments: Comment[] | undefined =
+				state.comments[action.payload.linkId];
+			const thing = comments
+				? findId(comments, action.payload.id)
+				: state.posts.find(p => p.name === action.payload.id);
+			const trueScore =
+				thing!.score -
+				(thing!.likes === true ? 1 : thing!.likes === false ? -1 : 0);
+			if (action.payload.dir === -1) {
+				thing!.likes = false;
+				thing!.score = trueScore - 1;
+			} else if (action.payload.dir === 1) {
+				thing!.likes = true;
+				thing!.score = trueScore + 1;
+			} else if (action.payload.dir === 0) {
+				thing!.likes = null;
+				thing!.score = trueScore;
+			}
+
+			if (!action.payload.linkId) {
+				return Object.assign({}, state, {
+					posts: state.posts.slice(0)
+				});
+			} else {
+				return Object.assign({}, state, {
+					comments: {
+						...state.comments,
+						[action.payload.linkId]:
+							comments || state.comments[action.payload.linkId]
+					}
+				});
+			}
+		}
+
+		default:
+			return state;
 	}
 };
 
-export const epic = (actions$: ActionsObservable<Action>) => actions$
-	.ofType(
-		ActionTypes.REQUEST_COMMENTS,
-		ActionTypes.REQUEST_ME,
-		ActionTypes.REQUEST_MORE_COMMENTS,
-		ActionTypes.REQUEST_POSTS
-	)
-	.mergeMap(action => {
-		switch (action.type) {
-			case ActionTypes.REQUEST_COMMENTS: {
-				return getPost(action.payload.linkId.replace("t3_", ""), action.payload.sort)
-					.map(res => res[1].data.children.map((c: any) => c.data))
-					.map(comments => receiveComments(comments, action.payload.linkId));
-			}
+export const epic = (
+	actions$: ActionsObservable<Action>,
+	store: MiddlewareAPI<GlobalState>
+) =>
+	actions$
+		.ofType(
+			ActionTypes.REQUEST_COMMENTS,
+			ActionTypes.REQUEST_ME,
+			ActionTypes.REQUEST_MORE_COMMENTS,
+			ActionTypes.REQUEST_POSTS,
+			ActionTypes.REQUEST_VOTE
+		)
+		.mergeMap(
+			(action): any => {
+				switch (action.type) {
+					case ActionTypes.REQUEST_COMMENTS: {
+						return getPost(
+							action.payload.linkId.replace("t3_", ""),
+							action.payload.sort
+						)
+							.map(res =>
+								res[1].data.children.map((c: any) => c.data)
+							)
+							.map(comments =>
+								receiveComments(comments, action.payload.linkId)
+							);
+					}
 
-			case ActionTypes.REQUEST_ME: {
-				return getMe()
-					.map(me => receiveMe(me));
-			}
+					case ActionTypes.REQUEST_ME: {
+						return getMe().map(me => receiveMe(me));
+					}
 
-			case ActionTypes.REQUEST_MORE_COMMENTS: {
-				const { linkId, id, children, sort } = action.payload;
-				return getMoreChildren(linkId, id.replace("t1_", ""), children, sort)
-					.map(comments => receiveMoreComments({
-						comments,
-						id: action.payload.id,
-						linkId: action.payload.linkId,
-						parentId: action.payload.parentId
-					}));
-			}
+					case ActionTypes.REQUEST_MORE_COMMENTS: {
+						const { linkId, id, children, sort } = action.payload;
+						return getMoreChildren(
+							linkId,
+							id.replace("t1_", ""),
+							children,
+							sort
+						).map(comments =>
+							receiveMoreComments({
+								comments,
+								id: action.payload.id,
+								linkId: action.payload.linkId,
+								parentId: action.payload.parentId
+							})
+						);
+					}
 
-			case ActionTypes.REQUEST_POSTS: {
-				return search({
-					q: `url:'${action.payload.videoId}'`,
-					sort: action.payload.sort,
-					type: "link"
-				})
-					.map(posts => receivePosts(posts));
-			}
+					case ActionTypes.REQUEST_POSTS: {
+						return search({
+							q: `url:'${action.payload.videoId}'`,
+							sort: action.payload.sort,
+							type: "link"
+						}).map(posts => receivePosts(posts));
+					}
 
-			default: return [];
-		}
-	});
+					case ActionTypes.REQUEST_VOTE: {
+						const { dir, id, linkId } = action.payload;
+						return vote(
+							store.getState().reddit.me!.modhash,
+							id,
+							dir
+						).map(() => receiveVote({ dir, id, linkId }));
+					}
+
+					default:
+						return [];
+				}
+			}
+		);
 
 export * from "./actions";
 export * from "./model";

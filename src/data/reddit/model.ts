@@ -1,5 +1,5 @@
 export interface State {
-	comments: { [id: string]: Comment[] | undefined; };
+	comments: { [id: string]: Comment[] | undefined };
 	commentsLoading: boolean;
 	me?: Me;
 	moreCommentsLoading: string[];
@@ -15,21 +15,24 @@ export interface Comment {
 	body_html: string;
 	can_gild: boolean;
 	children?: string[];
+	collapsed: boolean;
 	count?: number;
 	created_utc: number;
 	depth: number;
 	distinguished: string | null;
-	edited: boolean;
+	edited: number | false;
 	gilded: number;
 	id: string;
 	likes: boolean | null;
 	name: string;
 	parent_id: string;
-	replies: "" | {
-		data: {
-			children: { data: Comment }[];
-		}
-	};
+	replies:
+		| ""
+		| {
+				data: {
+					children: { data: Comment }[];
+				};
+		  };
 	saved: boolean;
 	score: number;
 	score_hidden: boolean;

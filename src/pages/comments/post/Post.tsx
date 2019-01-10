@@ -1,26 +1,39 @@
+import { decode } from "he";
 import React from "react";
 import { InjectedTranslateProps, translate } from "react-i18next";
-import { decode } from "he";
 
 import { Comment as RedditComment, Post as RedditPost } from "data/reddit";
 
+import { Loading } from "components/loading";
 import { Author } from "../Author";
+import { Time } from "../Time";
 import { Comment } from "./Comment";
 import { Footer } from "./Footer";
-import { Loading } from "components/loading";
-import { Time } from "../Time";
-import { Vote } from "./Vote";
 import style from "./Post.scss";
+import { Vote } from "./Vote";
 
 @translate("post")
-export class Post extends React.PureComponent<PostProps, {}> {
-	loadMore = (parentId: string, linkId: string, id: string, children: string[]) => {
+export class Post extends React.Component<PostProps, {}> {
+	loadMore = (
+		parentId: string,
+		linkId: string,
+		id: string,
+		children: string[]
+	) => {
 		this.props.loadMore(parentId, linkId, id, children, this.props.sort);
-	}
+	};
 
 	render() {
 		const t = this.props.t!;
-		const { comments, commentsLoading, modhash, moreCommentsLoading, onSortChange, post, sort } = this.props;
+		const {
+			comments,
+			commentsLoading,
+			modhash,
+			moreCommentsLoading,
+			onSortChange,
+			post,
+			sort
+		} = this.props;
 
 		const sortTypes = {
 			best: t("sort.best"),
@@ -29,14 +42,14 @@ export class Post extends React.PureComponent<PostProps, {}> {
 			controversial: t("sort.controversial"),
 			old: t("sort.old"),
 			random: t("sort.random"),
-			qa: t("sort.qa"),
-			live: t("sort.live")
+			qa: t("sort.qa")
 		};
 
 		return (
 			<div className={style.post}>
 				<header className={style.header}>
 					<Vote
+						linkId=""
 						id={post.name}
 						likes={post.likes}
 						modhash={post.archived ? "" : modhash}
@@ -45,7 +58,12 @@ export class Post extends React.PureComponent<PostProps, {}> {
 					/>
 
 					<div className={style.headerContent}>
-						<a className={style.title} href={`https://reddit.com${post.permalink}`}>{decode(post.title)}</a>
+						<a
+							className={style.title}
+							href={`https://reddit.com${post.permalink}`}
+						>
+							{decode(post.title)}
+						</a>
 
 						<p>
 							<Time created={post.created_utc} />
@@ -70,16 +88,17 @@ export class Post extends React.PureComponent<PostProps, {}> {
 
 				<div>
 					<div className={style.sort}>
-						{t("sortedBy")}:
-						&nbsp;
+						{t("sortedBy")}: &nbsp;
 						<select onChange={onSortChange} value={sort}>
 							{Object.entries(sortTypes).map(([type, name]) => (
-								<option key={type} value={type}>{name}</option>
+								<option key={type} value={type}>
+									{name}
+								</option>
 							))}
 						</select>
 					</div>
 
-					{(!commentsLoading || comments.length > 0) ? (
+					{!commentsLoading || comments.length > 0 ? (
 						comments.length > 0 ? (
 							comments.map(comment => (
 								<Comment
@@ -111,6 +130,12 @@ interface PostProps extends InjectedTranslateProps {
 	moreCommentsLoading: string[];
 	post: RedditPost;
 	sort: string;
-	loadMore(parentId: string, linkId: string, id: string, children: string[], sort: string): void;
+	loadMore(
+		parentId: string,
+		linkId: string,
+		id: string,
+		children: string[],
+		sort: string
+	): void;
 	onSortChange(e: React.ChangeEvent<HTMLSelectElement>): void;
 }

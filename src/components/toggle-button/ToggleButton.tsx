@@ -1,7 +1,7 @@
+import { push } from "connected-react-router";
 import React from "react";
 import { connect } from "react-redux";
 import { Action, Dispatch } from "redux";
-import { push } from "connected-react-router";
 
 import { returnOf } from "common/util";
 import { State } from "data";
@@ -13,19 +13,21 @@ import style from "./ToggleButton.scss";
 
 const layer = getCurrentLayer();
 
-class ToggleButton extends React.Component<ToggleButtonProps, {}> {
+class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	onButtonClick = () => {
 		const nextPath = this.props.path === "/youtube" ? "/" : "/youtube";
 		this.props.push(nextPath);
-	}
+	};
 
 	onMouseDown = (e: React.MouseEvent<any>) => {
 		// Clear focus only on mouse interaction.
 		e.preventDefault();
-	}
+	};
 
 	updateCommentDisplay(path: string) {
-		const comments = document.querySelector(layer.getCommentsContainerQuery()) as HTMLElement;
+		const comments = document.querySelector(
+			layer.getCommentsContainerQuery()
+		) as HTMLElement;
 		// Use opacity to hide comments, this prevents rendering artifacts.
 		if (path === "/youtube") {
 			comments.style.pointerEvents = "auto";
@@ -36,7 +38,7 @@ class ToggleButton extends React.Component<ToggleButtonProps, {}> {
 		}
 	}
 
-	componentWillReceiveProps(nextProps: ToggleButtonProps) {
+	componentWillReceiveProps(nextProps: ReduxProps) {
 		this.updateCommentDisplay(nextProps.path);
 	}
 
@@ -55,6 +57,8 @@ class ToggleButton extends React.Component<ToggleButtonProps, {}> {
 	}
 }
 
+export interface ToggleButtonProps {}
+
 const mapStateToProps = (state: State) => ({
 	path: state.router.location.pathname
 });
@@ -63,11 +67,15 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	push: (path: string) => dispatch(push(path))
 });
 
-export type ToggleButtonProps = typeof StateProps & typeof DispatchProps;
+type ReduxProps = typeof StateProps & typeof DispatchProps;
 const StateProps = returnOf(mapStateToProps);
 const DispatchProps = returnOf(mapDispatchToProps);
 
-const ConnectedToggleButton = connect<typeof StateProps, typeof DispatchProps, {}>(
+const ConnectedToggleButton = connect<
+	typeof StateProps,
+	typeof DispatchProps,
+	ToggleButtonProps
+>(
 	mapStateToProps,
 	mapDispatchToProps
 )(ToggleButton);

@@ -1,5 +1,5 @@
-import React from "react";
 import classnames from "classnames";
+import React from "react";
 
 import loading from "assets/loading.svg";
 import style from "./Loading.scss";

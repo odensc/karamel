@@ -1,12 +1,16 @@
-import React from "react";
 import classnames from "classnames";
+import React from "react";
 
 import { Post } from "data/reddit";
 
 import { PostItem } from "./PostItem";
 import style from "./PostList.scss";
 
-export const PostList = ({ activePostId, onPostClick, posts }: PostListProps) => (
+export const PostList = ({
+	activePostId,
+	onPostClick,
+	posts
+}: PostListProps) => (
 	<div className={style.list}>
 		{posts.map(post => (
 			<PostItem

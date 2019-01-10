@@ -3,7 +3,7 @@
 	"loadMore_count": "{{count}} reply",
 	"loadMore_count_plural": "{{count}} replies",
 	"loadMore_loading": "loading...",
-	"score": "{{count}} point",
+	"score": "{{score}} point",
 	"score_hidden": "score hidden",
-	"score_plural": "{{count}} points"
+	"score_plural": "{{score}} points"
 }

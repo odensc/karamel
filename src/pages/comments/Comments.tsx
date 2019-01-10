@@ -5,24 +5,47 @@ import { Action, Dispatch, bindActionCreators } from "redux";
 
 import { returnOf } from "common/util";
 import { State } from "data";
-import { Post as RedditPost, requestComments, requestMoreComments, requestPosts } from "data/reddit";
+import {
+	Post as RedditPost,
+	requestComments,
+	requestMoreComments,
+	requestPosts
+} from "data/reddit";
 
 import { Loading } from "components/loading";
+import style from "./Comments.scss";
 import { Post } from "./post";
 import { PostList } from "./post-list";
-import style from "./Comments.scss";
 
-class Comments extends React.Component<CommentsProps, CommentsState> {
+class Comments extends React.Component<
+	CommentsProps & ReduxProps,
+	CommentsState
+> {
 	state: CommentsState = { sort: {} };
 
-	loadMore = (parentId: string, linkId: string, id: string, children: string[], sort: string) => {
-		this.props.requestMoreComments({ parentId, linkId, id, children, sort });
-	}
+	loadMore = (
+		parentId: string,
+		linkId: string,
+		id: string,
+		children: string[],
+		sort: string
+	) => {
+		this.props.requestMoreComments({
+			parentId,
+			linkId,
+			id,
+			children,
+			sort
+		});
+	};
 
 	onPostClick = (post: RedditPost) => {
 		this.setState({ post });
-		this.props.requestComments(post.name, this.state.sort[post.name] || this.props.commentSort);
-	}
+		this.props.requestComments(
+			post.name,
+			this.state.sort[post.name] || this.props.commentSort
+		);
+	};
 
 	onSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		this.props.requestComments(this.state.post!.name, e.target.value);
@@ -32,7 +55,7 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 				[this.state.post!.name]: e.target.value
 			}
 		});
-	}
+	};
 
 	selectFirstPost(posts: RedditPost[]) {
 		// If posts have changed, default to first post.
@@ -46,7 +69,7 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 		this.selectFirstPost(this.props.posts);
 	}
 
-	componentWillReceiveProps(nextProps: CommentsProps) {
+	componentWillReceiveProps(nextProps: ReduxProps) {
 		this.selectFirstPost(nextProps.posts);
 	}
 
@@ -62,7 +85,7 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 					posts={this.props.posts}
 				/>
 
-				{(!postsLoading && post) ? (
+				{!postsLoading && post ? (
 					<Post
 						comments={this.props.comments[post.name] || []}
 						commentsLoading={commentsLoading}
@@ -81,9 +104,11 @@ class Comments extends React.Component<CommentsProps, CommentsState> {
 	}
 }
 
+export interface CommentsProps extends RouteComponentProps<{}> {}
+
 interface CommentsState {
 	post?: RedditPost;
-	sort: { [id: string]: string; };
+	sort: { [id: string]: string };
 }
 
 const mapStateToProps = (state: State) => ({
@@ -96,17 +121,25 @@ const mapStateToProps = (state: State) => ({
 	postsLoading: state.reddit.postsLoading
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
-	requestComments,
-	requestMoreComments,
-	requestPosts
-}, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+	bindActionCreators(
+		{
+			requestComments,
+			requestMoreComments,
+			requestPosts
+		},
+		dispatch
+	);
 
-export type CommentsProps = typeof StateProps & typeof DispatchProps & RouteComponentProps<{}>;
+type ReduxProps = typeof StateProps & typeof DispatchProps;
 const StateProps = returnOf(mapStateToProps);
 const DispatchProps = returnOf(mapDispatchToProps);
 
-const ConnectedComments = connect<typeof StateProps, typeof DispatchProps, RouteComponentProps<{}>>(
+const ConnectedComments = connect<
+	typeof StateProps,
+	typeof DispatchProps,
+	CommentsProps
+>(
 	mapStateToProps,
 	mapDispatchToProps
 )(Comments);
