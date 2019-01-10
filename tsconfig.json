@@ -26,7 +26,8 @@
 		"noUnusedParameters": true,
 
 		"allowSyntheticDefaultImports": true,
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"strictFunctionTypes": false
 	},
 
 	"exclude": [
