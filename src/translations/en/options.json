@@ -1,3 +1,6 @@
 {
-	"title": "Options"
+	"title": "Options",
+	"commentSort": "Sort comments by",
+	"default": "Show comments from (default)",
+	"postSort": "Sort posts by"
 }

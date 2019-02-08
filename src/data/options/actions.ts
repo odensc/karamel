@@ -7,17 +7,15 @@ export enum ActionTypes {
 	UPDATE = "options/UPDATE"
 }
 
-interface RequestAction extends TypedAction<ActionTypes.REQUEST> { }
+interface RequestAction extends TypedAction<ActionTypes.REQUEST> {}
 
-interface SyncedAction extends TypedAction<ActionTypes.SYNCED> { }
+interface SyncedAction extends TypedAction<ActionTypes.SYNCED> {}
 
 interface UpdateAction extends TypedAction<ActionTypes.UPDATE> {
 	payload: Partial<State>;
 }
 
-export type Action =
-	| RequestAction
-	| UpdateAction;
+export type Action = RequestAction | SyncedAction | UpdateAction;
 
 export const request = (): RequestAction => ({
 	type: ActionTypes.REQUEST
