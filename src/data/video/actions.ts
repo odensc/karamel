@@ -6,13 +6,12 @@ export enum ActionTypes {
 }
 
 interface UpdateAction extends TypedAction<ActionTypes.UPDATE> {
-	payload: State;
+	payload: Partial<State>;
 }
 
-export type Action =
-	| UpdateAction;
+export type Action = UpdateAction;
 
-export const update = (delta: State): UpdateAction => ({
+export const update = (delta: Partial<State>): UpdateAction => ({
 	type: ActionTypes.UPDATE,
 	payload: delta
 });

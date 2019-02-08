@@ -5,19 +5,35 @@ import { Action, Dispatch, bindActionCreators } from "redux";
 import { returnOf } from "common/util";
 import { State } from "data";
 import { update } from "data/video";
+import { getCurrentLayer } from "layer";
 
 const CHECK_INTERVAL = 1000;
 
-class VideoListener extends React.Component<VideoListenerProps & ReduxProps, {}> {
+class VideoListener extends React.Component<
+	VideoListenerProps & ReduxProps,
+	{}
+> {
+	private descTimeoutId: any;
 	private intervalId: any;
 
 	checkLocation = () => {
 		const search = new URLSearchParams(location.search);
 		const id = search.get("v");
 		if (this.props.id !== id) {
-			this.props.update({ id });
+			clearTimeout(this.descTimeoutId);
+			this.descTimeoutId = setTimeout(() => {
+				this.props.update({
+					description:
+						document.querySelector(
+							getCurrentLayer().getVideoDescriptionQuery()
+						)!.textContent || ""
+				});
+			}, 1000);
+			this.props.update({
+				id
+			});
 		}
-	}
+	};
 
 	componentDidMount() {
 		this.intervalId = setInterval(this.checkLocation, CHECK_INTERVAL);
@@ -34,11 +50,15 @@ class VideoListener extends React.Component<VideoListenerProps & ReduxProps, {}>
 	}
 }
 
-export interface VideoListenerProps { }
+export interface VideoListenerProps {}
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
-	update
-}, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+	bindActionCreators(
+		{
+			update
+		},
+		dispatch
+	);
 
 const mapStateToProps = (state: State) => ({
 	id: state.video.id
@@ -48,7 +68,11 @@ type ReduxProps = typeof StateProps & typeof DispatchProps;
 const StateProps = returnOf(mapStateToProps);
 const DispatchProps = returnOf(mapDispatchToProps);
 
-const ConnectedVideoListener = connect<typeof StateProps, typeof DispatchProps, VideoListenerProps>(
+const ConnectedVideoListener = connect<
+	typeof StateProps,
+	typeof DispatchProps,
+	VideoListenerProps
+>(
 	mapStateToProps,
 	mapDispatchToProps
 )(VideoListener);

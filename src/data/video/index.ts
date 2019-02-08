@@ -9,6 +9,7 @@ import { Action, ActionTypes } from "./actions";
 import { State } from "./model";
 
 const initialState: State = {
+	description: "",
 	id: null
 };
 
