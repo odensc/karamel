@@ -1,6 +1,9 @@
 import { Observable } from "common/rxjs";
+import { push } from "connected-react-router";
+import { MiddlewareAPI } from "redux";
 import { ActionsObservable } from "redux-observable";
 
+import { State as GlobalState } from "data";
 import { Action, ActionTypes, synced, update } from "./actions";
 import { State } from "./model";
 
@@ -27,22 +30,35 @@ const getAsObservable = Observable.bindCallback<object, { [key: string]: any }>(
 const setAsObservable = Observable.bindCallback<object, never>(chrome.storage
 	.sync.set as any);
 
-export const epic = (actions$: ActionsObservable<Action>) =>
-	actions$.ofType(ActionTypes.REQUEST, ActionTypes.UPDATE).mergeMap(
-		(action): any => {
-			switch (action.type) {
-				case ActionTypes.REQUEST: {
-					return getAsObservable(initialState).map(res =>
-						update(res)
-					);
-				}
+export const epic = (
+	actions$: ActionsObservable<Action>,
+	store: MiddlewareAPI<GlobalState>
+) =>
+	actions$
+		.ofType(ActionTypes.REQUEST, ActionTypes.UPDATE, ActionTypes.SYNCED)
+		.mergeMap(
+			(action): any => {
+				switch (action.type) {
+					case ActionTypes.REQUEST: {
+						return getAsObservable(initialState).map(res =>
+							update(res)
+						);
+					}
 
-				case ActionTypes.UPDATE: {
-					return setAsObservable(action.payload).map(() => synced());
+					case ActionTypes.UPDATE: {
+						return setAsObservable(action.payload).map(() =>
+							synced()
+						);
+					}
+
+					case ActionTypes.SYNCED: {
+						return location.protocol === "chrome-extension:"
+							? []
+							: [push("/" + store.getState().options.default)];
+					}
 				}
 			}
-		}
-	);
+		);
 
 export * from "./actions";
 export * from "./model";

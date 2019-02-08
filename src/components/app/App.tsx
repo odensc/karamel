@@ -1,7 +1,7 @@
 import { push } from "connected-react-router";
 import React from "react";
 import { connect } from "react-redux";
-import { Route } from "react-router";
+import { Route, Switch } from "react-router";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
 import { returnOf } from "common/util";
@@ -20,13 +20,16 @@ const noop = () => null!;
 class App extends React.Component<AppProps & ReduxProps, {}> {
 	private hasSwitched = false;
 
-	componentDidMount() {
+	componentWillMount() {
 		this.props.requestMe();
 		this.props.requestOptions();
-		this.props.push(`/${this.props.default}`);
+		if (location.protocol === "chrome-extension:")
+			this.props.push("/options");
 	}
 
 	componentWillReceiveProps(nextProps: ReduxProps) {
+		if (location.protocol === "chrome-extension:") return;
+
 		// If there are no posts for the next video, switch to YouTube comments.
 		if (!nextProps.postsLoading && nextProps.posts.length === 0) {
 			this.props.push("/youtube");
@@ -40,8 +43,12 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 	render() {
 		return (
 			<main className={style.container}>
-				<VideoListener />
-				<ToggleButton />
+				{location.protocol !== "chrome-extension:" && (
+					<>
+						<VideoListener />
+						<ToggleButton />
+					</>
+				)}
 
 				<div
 					style={{
@@ -50,9 +57,11 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 						width: "100%"
 					}}
 				>
-					<Route path="/" component={Comments} />
-					<Route exact path="/youtube" component={noop} />
-					<Route exact path="/options" component={Options} />
+					<Switch>
+						<Route exact path="/youtube" component={noop} />
+						<Route exact path="/options" component={Options} />
+						<Route path="/" component={Comments} />
+					</Switch>
 				</div>
 			</main>
 		);
