@@ -30,7 +30,8 @@
 		background: rgba(180, 180, 180, 0.8);
 	}
 
-	&::-webkit-scrollbar-track, &::-webkit-scrollbar-corner {
+	&::-webkit-scrollbar-track,
+	&::-webkit-scrollbar-corner {
 		background: transparent;
 		border-radius: 0;
 	}
@@ -59,7 +60,9 @@
 		border-right: 0;
 	}
 
-	&:hover, &:active, &.active {
+	&:hover,
+	&:active,
+	&.active {
 		background: #fff;
 
 		@at-root [dark] & {
@@ -73,5 +76,9 @@
 		@at-root [dark] & {
 			border-bottom-color: #111;
 		}
+	}
+
+	&.official {
+		color: #f51818;
 	}
 }
