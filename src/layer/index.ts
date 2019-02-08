@@ -12,9 +12,9 @@ let layer: CompatLayer;
 export function getCurrentLayer(): CompatLayer {
 	if (layer) return layer;
 
-	// Only the new version uses import links.
+	// Only the new version uses custom elements.
 	// This is the most reliable method I could find to detect versions.
-	if (document.querySelector("link[rel=import]")) {
+	if (document.querySelector("ytd-app")) {
 		layer = new NewLayer();
 	} else {
 		layer = new OldLayer();
