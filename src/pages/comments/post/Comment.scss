@@ -8,11 +8,22 @@
 		margin-left: 32px;
 	}
 
-	&.collapsed,
-	&.deleted {
+	&.collapsed {
 		.footer,
 		.vote {
 			display: none;
+		}
+	}
+
+	&.deleted {
+		.footer li,
+		.vote {
+			display: none;
+		}
+
+		// show permalink and save
+		.footer li:nth-child(-n + 2) {
+			display: block;
 		}
 	}
 

@@ -74,13 +74,14 @@ class Comments extends React.Component<
 	}
 
 	render() {
-		const { commentsLoading, postsLoading } = this.props;
+		const { commentsLoading, description, postsLoading } = this.props;
 		const { post } = this.state;
 
 		return (
 			<section className={style.container}>
 				<PostList
 					activePostId={post ? post.name : ""}
+					description={description}
 					onPostClick={this.onPostClick}
 					posts={this.props.posts}
 				/>
@@ -115,6 +116,7 @@ const mapStateToProps = (state: State) => ({
 	comments: state.reddit.comments,
 	commentSort: state.options.commentSort,
 	commentsLoading: state.reddit.commentsLoading,
+	description: state.video.description,
 	modhash: state.reddit.me ? state.reddit.me.modhash : "",
 	moreCommentsLoading: state.reddit.moreCommentsLoading,
 	posts: state.reddit.posts,

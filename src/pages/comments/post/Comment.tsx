@@ -59,7 +59,9 @@ export class Comment extends React.Component<CommentProps, CommentState> {
 				className={classnames(style.comment, {
 					[style.collapsed]: this.state.collapsed,
 					[style.deleted]:
-						comment.author === "[deleted]" || post.archived
+						comment.body === "[deleted]" ||
+						comment.body === "[removed]" ||
+						post.archived
 				})}
 			>
 				{!comment.archived && modhash && (
