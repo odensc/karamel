@@ -41,8 +41,7 @@ export class Post extends React.Component<PostProps, {}> {
 			new: t("sort.new"),
 			controversial: t("sort.controversial"),
 			old: t("sort.old"),
-			random: t("sort.random"),
-			qa: t("sort.qa")
+			random: t("sort.random")
 		};
 
 		return (
