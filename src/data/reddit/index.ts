@@ -6,10 +6,10 @@ import {
 	vote
 } from "common/reddit-api";
 import "common/rxjs";
-import { State as GlobalState } from "data";
 import { MiddlewareAPI } from "redux";
 import { ActionsObservable } from "redux-observable";
 
+import { State as GlobalState } from "data";
 import {
 	Action,
 	ActionTypes,
