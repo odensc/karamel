@@ -17,7 +17,7 @@ class Options extends React.Component<OptionsProps, {}> {
 
 	render() {
 		const t = this.props.t!;
-		const { options } = this.props;
+		const { me, options } = this.props;
 		const sortTypes = {
 			best: t("post:sort.best"),
 			top: t("post:sort.top"),
@@ -29,6 +29,11 @@ class Options extends React.Component<OptionsProps, {}> {
 
 		return (
 			<section className={style.container}>
+				{me && (
+					<p>
+						Logged in on Reddit as: <b>{me.name}</b>
+					</p>
+				)}
 				<p>
 					{t("default")}:{" "}
 					<select
@@ -75,6 +80,7 @@ export type OptionsProps = InjectedTranslateProps &
 	ReduxProps;
 
 const mapStateToProps = (state: State) => ({
+	me: state.reddit.me,
 	options: state.options
 });
 
