@@ -60,7 +60,7 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 					<Switch>
 						<Route exact path="/youtube" component={noop} />
 						<Route exact path="/options" component={Options} />
-						<Route path="/" component={Comments} />
+						<Route exact path="/reddit" component={Comments} />
 					</Switch>
 				</div>
 			</main>

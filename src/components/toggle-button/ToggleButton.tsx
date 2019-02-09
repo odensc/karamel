@@ -15,7 +15,8 @@ const layer = getCurrentLayer();
 
 class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	onButtonClick = () => {
-		const nextPath = this.props.path === "/youtube" ? "/" : "/youtube";
+		const nextPath =
+			this.props.path === "/youtube" ? "/reddit" : "/youtube";
 		this.props.push(nextPath);
 	};
 
