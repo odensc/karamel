@@ -6,9 +6,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
 	entry: {
-		"index": [
-			`${common.paths.src}/index.tsx`
-		]
+		index: [`${common.paths.src}/index.tsx`]
 	},
 	output: {
 		path: common.paths.dist,
@@ -26,7 +24,7 @@ module.exports = {
 		rules: [
 			{
 				enforce: "pre",
-				test: /\.scss$/,
+				test: /\.(s)?css$/,
 				use: common.loaders.css
 			},
 
@@ -37,14 +35,10 @@ module.exports = {
 		]
 	},
 	plugins: [
-		new CleanPlugin(
-			[common.paths.dist], {
-				root: process.cwd(),
-				verbose: false
-			}
-		),
-		new CopyPlugin([
-			{from: common.paths.static}
-		])
+		new CleanPlugin([common.paths.dist], {
+			root: process.cwd(),
+			verbose: false
+		}),
+		new CopyPlugin([{ from: common.paths.static }])
 	]
 };
