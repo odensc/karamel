@@ -31,7 +31,7 @@ class Options extends React.Component<OptionsProps, {}> {
 			<section className={style.container}>
 				{me && (
 					<p>
-						Logged in on Reddit as: <b>{me.name}</b>
+						Logged into Reddit as: <b>{me.name}</b>
 					</p>
 				)}
 				<p>

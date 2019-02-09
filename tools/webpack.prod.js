@@ -1,7 +1,7 @@
 process.env.NODE_ENV = "production";
 const base = require("./webpack.base");
 const webpack = require("webpack");
-const BabiliPlugin = require("babel-minify-webpack-plugin");
+const BabelMinifyPlugin = require("babel-minify-webpack-plugin");
 
 module.exports = Object.assign(base, {
 	module: {
@@ -27,7 +27,7 @@ module.exports = Object.assign(base, {
 		new webpack.DefinePlugin({
 			"process.env.NODE_ENV": `"production"`
 		}),
-		new BabiliPlugin(
+		new BabelMinifyPlugin(
 			{
 				removeConsole: true,
 				removeDebugger: true
