@@ -56,7 +56,9 @@ export function getMoreChildren(
 	};
 	return ajax(
 		`${BASE_URL}/api/morechildren.json?${stringify(query)}`
-	).switchMap(handleJsonError(res => res.things.map((c: any) => c.data)));
+	).switchMap(
+		handleJsonError(res => (res ? res.things.map((c: any) => c.data) : []))
+	);
 }
 
 export function getPost(postId: string, sort: string) {
