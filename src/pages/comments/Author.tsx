@@ -16,7 +16,7 @@ const attrMap: {
 	},
 	moderator: {
 		class: style.moderator,
-		letter: "A"
+		letter: "M"
 	},
 	submitter: {
 		class: style.submitter,
