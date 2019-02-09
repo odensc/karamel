@@ -47,11 +47,16 @@ const findId = (
 				child.data.replies &&
 				Array.isArray(child.data.replies.data.children)
 			) {
-				return findId(comments, id, child.data.replies.data.children);
+				const maybeComment = findId(
+					comments,
+					id,
+					child.data.replies.data.children
+				);
+				if (maybeComment) {
+					return maybeComment;
+				}
 			}
 		}
-
-		return;
 	}
 };
 
