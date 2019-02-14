@@ -46,7 +46,10 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 				{location.protocol !== "chrome-extension:" && (
 					<>
 						<VideoListener />
-						<ToggleButton />
+						<ToggleButton
+							disabled={this.props.posts.length === 0}
+							loading={this.props.postsLoading}
+						/>
 					</>
 				)}
 

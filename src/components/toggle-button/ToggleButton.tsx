@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { push } from "connected-react-router";
 import React from "react";
 import { connect } from "react-redux";
@@ -15,6 +16,8 @@ const layer = getCurrentLayer();
 
 class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	onButtonClick = () => {
+		if (this.props.disabled) return;
+
 		const nextPath =
 			this.props.path === "/youtube" ? "/reddit" : "/youtube";
 		this.props.push(nextPath);
@@ -44,13 +47,17 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	}
 
 	render() {
-		const { path } = this.props;
+		const { disabled, loading, path } = this.props;
 
 		return (
 			<button
-				className={style.button}
+				className={classNames(style.button, {
+					[style.disabled]: disabled,
+					[style.loading]: loading
+				})}
 				onMouseDown={this.onMouseDown}
 				onClick={this.onButtonClick}
+				title={disabled ? "No comments found" : ""}
 			>
 				<img src={path === "/youtube" ? redditLogo : youtubeLogo} />
 			</button>
@@ -58,7 +65,10 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	}
 }
 
-export interface ToggleButtonProps {}
+export interface ToggleButtonProps {
+	disabled?: boolean;
+	loading?: boolean;
+}
 
 const mapStateToProps = (state: State) => ({
 	path: state.router.location.pathname

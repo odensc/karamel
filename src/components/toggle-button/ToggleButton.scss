@@ -4,8 +4,18 @@
 	right: 5px;
 	transition: transform 0.2s ease;
 
-	&:hover, &:focus {
+	&:not(.disabled):hover,
+	&:not(.disabled):focus {
 		transform: scale(1.1);
+	}
+
+	&.disabled {
+		cursor: default;
+		opacity: 0.3;
+	}
+
+	&.loading {
+		opacity: 0;
 	}
 
 	img {
