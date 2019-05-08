@@ -32,11 +32,11 @@ export function comment(modhash: string, parentId: string, text: string) {
 	};
 	return ajax(`${BASE_URL}/api/comment.json?${stringify(query)}`, {
 		method: "POST"
-	}).switchMap(handleJsonError(res => res.things[0].data));
+	}).mergeMap(handleJsonError(res => res.things[0].data));
 }
 
 export function getMe(): Observable<Me | undefined> {
-	return ajax(`${BASE_URL}/api/me.json`).switchMap(res => [
+	return ajax(`${BASE_URL}/api/me.json`).mergeMap(res => [
 		res.response.data.modhash ? res.response.data : undefined
 	]);
 }
@@ -56,7 +56,7 @@ export function getMoreChildren(
 	};
 	return ajax(
 		`${BASE_URL}/api/morechildren.json?${stringify(query)}`
-	).switchMap(
+	).mergeMap(
 		handleJsonError(res => (res ? res.things.map((c: any) => c.data) : []))
 	);
 }
