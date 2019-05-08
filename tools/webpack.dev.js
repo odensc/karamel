@@ -5,6 +5,7 @@ const ForkTsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
 const FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 
 module.exports = Object.assign(base, {
+	mode: "development",
 	module: {
 		rules: base.module.rules.concat([
 			{
@@ -18,12 +19,10 @@ module.exports = Object.assign(base, {
 		])
 	},
 	plugins: base.plugins.concat([
-		new webpack.WatchIgnorePlugin([
-			/.*\.scss\.d\.ts/
-		]),
+		new webpack.WatchIgnorePlugin([/.*\.scss\.d\.ts/]),
 		new webpack.DefinePlugin({
-            "process.env.NODE_ENV": `"development"`
-        }),
+			"process.env.NODE_ENV": `"development"`
+		}),
 		new ForkTsCheckerPlugin({
 			tslint: true
 		}),

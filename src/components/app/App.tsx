@@ -1,7 +1,7 @@
 import { push } from "connected-react-router";
 import React from "react";
 import { connect } from "react-redux";
-import { Route, Switch } from "react-router";
+import { Route } from "react-router";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
 import { returnOf } from "common/util";
@@ -55,7 +55,7 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 
 				<div
 					style={{
-						visibility:
+						display:
 							this.props.path === "/youtube" ? "none" : "block",
 						width: "100%"
 					}}

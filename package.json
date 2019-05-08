@@ -21,7 +21,6 @@
 		"@types/react-router-dom": "^4.3.3",
 		"@types/webpack-env": "^1.13.9",
 		"autoprefixer": "^7.2.3",
-		"babel-minify-webpack-plugin": "^0.2.0",
 		"clean-webpack-plugin": "^0.1.17",
 		"copy-webpack-plugin": "^4.3.0",
 		"css-loader": "^0.28.7",
@@ -45,7 +44,8 @@
 		"typescript": "^3.4.5",
 		"typings-for-css-modules-loader": "^1.7.0",
 		"url-loader": "^0.6.2",
-		"webpack": "^3.10.0"
+		"webpack": "^4.30.0",
+		"webpack-cli": "^3.3.2"
 	},
 	"dependencies": {
 		"chrome-extension-async": "^3.3.2",
