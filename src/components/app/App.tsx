@@ -62,7 +62,7 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 				>
 					<Route exact path="/youtube" component={noop} />
 					<Route exact path="/options" component={Options} />
-					<Route path="/" component={Comments} />
+					<Route path={/\/(?!options)/ as any} component={Comments} />
 				</div>
 			</main>
 		);

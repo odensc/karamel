@@ -14,7 +14,6 @@ const BASE_URL = "https://www.reddit.com";
 
 chrome.runtime.onMessage.addListener(
 	(request: FetchRequest, _, sendResponse) => {
-		console.log(request);
 		fetch(BASE_URL + request.url, {
 			credentials: "include",
 			method: request.method
