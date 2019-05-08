@@ -1,9 +1,11 @@
-import { Observable } from "common/rxjs";
+import "chrome-extension-async";
 import { push } from "connected-react-router";
-import { MiddlewareAPI } from "redux";
-import { ActionsObservable } from "redux-observable";
+import { Epic, ofType } from "redux-observable";
+import { from } from "rxjs";
+import { map, mergeMap } from "rxjs/operators";
 
 import { State as GlobalState } from "data";
+
 import { Action, ActionTypes, synced, update } from "./actions";
 import { State } from "./model";
 
@@ -24,41 +26,31 @@ export const reducer = (state = initialState, action: Action): State => {
 	}
 };
 
-const getAsObservable = Observable.bindCallback<object, { [key: string]: any }>(
-	chrome.storage.sync.get
-);
-const setAsObservable = Observable.bindCallback<object, never>(chrome.storage
-	.sync.set as any);
+export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
+	action$.pipe(
+		ofType(ActionTypes.REQUEST, ActionTypes.UPDATE, ActionTypes.SYNCED),
+		mergeMap(action => {
+			switch (action.type) {
+				case ActionTypes.REQUEST: {
+					return from(chrome.storage.sync.get(initialState)).pipe(
+						map(res => update(res))
+					);
+				}
 
-export const epic = (
-	actions$: ActionsObservable<Action>,
-	store: MiddlewareAPI<GlobalState>
-) =>
-	actions$
-		.ofType(ActionTypes.REQUEST, ActionTypes.UPDATE, ActionTypes.SYNCED)
-		.mergeMap(
-			(action): any => {
-				switch (action.type) {
-					case ActionTypes.REQUEST: {
-						return getAsObservable(initialState).map(res =>
-							update(res)
-						);
-					}
+				case ActionTypes.UPDATE: {
+					return from(chrome.storage.sync.set(action.payload)).pipe(
+						map(() => synced())
+					);
+				}
 
-					case ActionTypes.UPDATE: {
-						return setAsObservable(action.payload).map(() =>
-							synced()
-						);
-					}
-
-					case ActionTypes.SYNCED: {
-						return location.protocol === "chrome-extension:"
-							? []
-							: [push("/" + store.getState().options.default)];
-					}
+				case ActionTypes.SYNCED: {
+					return location.protocol === "chrome-extension:"
+						? []
+						: [push("/" + state$.value.options.default)];
 				}
 			}
-		);
+		})
+	);
 
 export * from "./actions";
 export * from "./model";

@@ -1,11 +1,11 @@
 import { connectRouter, routerMiddleware } from "connected-react-router";
-import reducer, { State, rootEpic } from "data";
+import reducers, { State, rootEpic } from "data";
 import { History } from "history";
-import { applyMiddleware, compose, createStore } from "redux";
+import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import { createEpicMiddleware } from "redux-observable";
 
 export default (history: History, initialState?: State) => {
-	const epicMiddleware = createEpicMiddleware(rootEpic);
+	const epicMiddleware = createEpicMiddleware();
 
 	const optional: any[] = [];
 	if (process.env.NODE_ENV === "development") {
@@ -19,12 +19,23 @@ export default (history: History, initialState?: State) => {
 	);
 
 	const store = initialState
-		? createStore<State>(
-				connectRouter(history)(reducer),
+		? createStore<State, any, any, any>(
+				combineReducers({
+					...reducers,
+					router: connectRouter(history)
+				}),
 				initialState,
 				enhancers
 		  )
-		: createStore<State>(connectRouter(history)(reducer), enhancers);
+		: createStore<State, any, any, any>(
+				combineReducers({
+					...reducers,
+					router: connectRouter(history)
+				}),
+				enhancers
+		  );
+
+	epicMiddleware.run(rootEpic);
 
 	return store;
 };

@@ -41,10 +41,6 @@ class Comments extends React.Component<
 
 	onPostClick = (post: RedditPost) => {
 		this.setState({ post });
-		this.props.requestComments(
-			post.name,
-			this.state.sort[post.name] || this.props.commentSort
-		);
 	};
 
 	onSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -57,20 +53,26 @@ class Comments extends React.Component<
 		});
 	};
 
-	selectFirstPost(posts: RedditPost[]) {
-		// If posts have changed, default to first post.
-		if (posts.length > 0 && !posts.includes(this.state.post!)) {
-			this.setState({ post: posts[0] });
-			this.props.requestComments(posts[0].name, this.props.commentSort);
+	selectFirstPost = (posts: RedditPost[]) =>
+		posts.length > 0 && this.setState({ post: posts[0] });
+
+	componentDidUpdate(prevProps: ReduxProps, prevState: CommentsState) {
+		// Select first post if it's the first load
+		if (prevProps.posts.length !== this.props.posts.length) {
+			this.selectFirstPost(this.props.posts);
 		}
-	}
 
-	componentDidMount() {
-		this.selectFirstPost(this.props.posts);
-	}
-
-	componentWillReceiveProps(nextProps: ReduxProps) {
-		this.selectFirstPost(nextProps.posts);
+		// Request comments if post was changed
+		if (
+			this.state.post &&
+			!this.props.comments[this.state.post.name] &&
+			(!prevState.post || this.state.post.name !== prevState.post.name)
+		) {
+			this.props.requestComments(
+				this.state.post!.name,
+				this.state.sort[this.state.post!.name] || this.props.commentSort
+			);
+		}
 	}
 
 	render() {

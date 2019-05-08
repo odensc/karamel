@@ -9,13 +9,7 @@
 		"outDir": "./dist",
 
 		"jsx": "react",
-		"lib": [
-			"dom",
-			"es2017"
-		],
-		"plugins": [
-			{"name": "tslint-language-service"}
-		],
+		"lib": ["dom", "es2017"],
 
 		"strict": true,
 		"sourceMap": true,
@@ -30,8 +24,5 @@
 		"strictFunctionTypes": false
 	},
 
-	"exclude": [
-		"node_modules",
-		"dist"
-	]
+	"exclude": ["node_modules", "dist"]
 }

@@ -1,4 +1,4 @@
-import createHistory from "history/createMemoryHistory";
+import { createMemoryHistory } from "history";
 import React from "react";
 import { render } from "react-dom";
 import { I18nextProvider } from "react-i18next";
@@ -10,7 +10,7 @@ import Router from "router";
 import configureStore from "store/configureStore";
 import "styles/global.scss";
 
-const history = createHistory();
+const history = createMemoryHistory();
 const store = configureStore(history);
 const layer = getCurrentLayer();
 

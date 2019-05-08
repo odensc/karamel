@@ -1,7 +1,6 @@
-import { MiddlewareAPI } from "redux";
-import { ActionsObservable } from "redux-observable";
+import { Epic, ofType } from "redux-observable";
+import { mergeMap } from "rxjs/operators";
 
-import "common/rxjs";
 import { State as GlobalState } from "data";
 
 import { requestPosts } from "../reddit";
@@ -24,19 +23,19 @@ export const reducer = (state = initialState, action: Action): State => {
 	}
 };
 
-export const epic = (
-	actions$: ActionsObservable<Action>,
-	store: MiddlewareAPI<GlobalState>
-) =>
-	actions$.ofType(ActionTypes.UPDATE).mergeMap(action =>
-		action.payload.id
-			? [
-					requestPosts({
-						sort: store.getState().options.postSort,
-						videoId: action.payload.id
-					})
-			  ]
-			: []
+export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
+	action$.pipe(
+		ofType(ActionTypes.UPDATE),
+		mergeMap(action =>
+			action.payload.id
+				? [
+						requestPosts({
+							sort: state$.value.options.postSort,
+							videoId: action.payload.id
+						})
+				  ]
+				: []
+		)
 	);
 
 export * from "./actions";

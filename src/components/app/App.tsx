@@ -55,16 +55,14 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 
 				<div
 					style={{
-						display:
+						visibility:
 							this.props.path === "/youtube" ? "none" : "block",
 						width: "100%"
 					}}
 				>
-					<Switch>
-						<Route exact path="/youtube" component={noop} />
-						<Route exact path="/options" component={Options} />
-						<Route exact path="/reddit" component={Comments} />
-					</Switch>
+					<Route exact path="/youtube" component={noop} />
+					<Route exact path="/options" component={Options} />
+					<Route path="/" component={Comments} />
 				</div>
 			</main>
 		);

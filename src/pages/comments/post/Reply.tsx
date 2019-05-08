@@ -21,7 +21,7 @@ class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 
 	onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		this.setState({ text: e.target.value });
-	}
+	};
 
 	onClickSave = async () => {
 		const { modhash, onClose, linkId, parentId, t } = this.props;
@@ -29,7 +29,11 @@ class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 		this.setState({ error, loading: true });
 
 		try {
-			const data = await comment(modhash, parentId, this.state.text).toPromise();
+			const data = await comment(
+				modhash,
+				parentId,
+				this.state.text
+			).toPromise();
 			this.props.receiveMoreComments({
 				comments: [data],
 				id: "",
@@ -38,12 +42,13 @@ class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 				prepend: true
 			});
 		} catch (err) {
+			console.log(err);
 			error = typeof err === "string" ? err : t!("unknownError");
 		}
 
 		this.setState({ error, loading: false });
 		if (!error) onClose();
-	}
+	};
 
 	render() {
 		const t = this.props.t!;
@@ -55,7 +60,9 @@ class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 				<ActionList>
 					<button onClick={this.onClickSave}>{t("save")}</button>
 					<button onClick={this.props.onClose}>{t("cancel")}</button>
-					{this.state.error ? <p className={style.error}>{this.state.error}</p> : null}
+					{this.state.error ? (
+						<p className={style.error}>{this.state.error}</p>
+					) : null}
 					{this.state.loading ? <p>{t("submitting")}</p> : null}
 				</ActionList>
 			</div>
@@ -76,9 +83,13 @@ interface ReplyState {
 	text: string;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
-	receiveMoreComments
-}, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+	bindActionCreators(
+		{
+			receiveMoreComments
+		},
+		dispatch
+	);
 
 type ReduxProps = typeof DispatchProps;
 const DispatchProps = returnOf(mapDispatchToProps);

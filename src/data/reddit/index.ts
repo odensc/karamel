@@ -5,11 +5,10 @@ import {
 	search,
 	vote
 } from "common/reddit-api";
-import "common/rxjs";
-import { MiddlewareAPI } from "redux";
-import { ActionsObservable } from "redux-observable";
+import { Epic, ofType } from "redux-observable";
 
 import { State as GlobalState } from "data";
+import { map, mergeMap } from "rxjs/operators";
 import {
 	Action,
 	ActionTypes,
@@ -184,77 +183,74 @@ export const reducer = (state = initialState, action: Action): State => {
 	}
 };
 
-export const epic = (
-	actions$: ActionsObservable<Action>,
-	store: MiddlewareAPI<GlobalState>
-) =>
-	actions$
-		.ofType(
+export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
+	action$.pipe(
+		ofType(
 			ActionTypes.REQUEST_COMMENTS,
 			ActionTypes.REQUEST_ME,
 			ActionTypes.REQUEST_MORE_COMMENTS,
 			ActionTypes.REQUEST_POSTS,
 			ActionTypes.REQUEST_VOTE
-		)
-		.mergeMap(
-			(action): any => {
-				switch (action.type) {
-					case ActionTypes.REQUEST_COMMENTS: {
-						return getPost(
-							action.payload.linkId.replace("t3_", ""),
-							action.payload.sort
+		),
+		mergeMap(action => {
+			switch (action.type) {
+				case ActionTypes.REQUEST_COMMENTS: {
+					return getPost(
+						action.payload.linkId.replace("t3_", ""),
+						action.payload.sort
+					).pipe(
+						map(res =>
+							res[1].data.children.map((c: any) => c.data)
+						),
+						map(comments =>
+							receiveComments(comments, action.payload.linkId)
 						)
-							.map(res =>
-								res[1].data.children.map((c: any) => c.data)
-							)
-							.map(comments =>
-								receiveComments(comments, action.payload.linkId)
-							);
-					}
+					);
+				}
 
-					case ActionTypes.REQUEST_ME: {
-						return getMe().map(me => receiveMe(me));
-					}
+				case ActionTypes.REQUEST_ME: {
+					return getMe().pipe(map(me => receiveMe(me)));
+				}
 
-					case ActionTypes.REQUEST_MORE_COMMENTS: {
-						const { linkId, id, children, sort } = action.payload;
-						return getMoreChildren(
-							linkId,
-							id.replace("t1_", ""),
-							children,
-							sort
-						).map(comments =>
+				case ActionTypes.REQUEST_MORE_COMMENTS: {
+					const { linkId, id, children, sort } = action.payload;
+					return getMoreChildren(
+						linkId,
+						id.replace("t1_", ""),
+						children,
+						sort
+					).pipe(
+						map(comments =>
 							receiveMoreComments({
 								comments,
 								id: action.payload.id,
 								linkId: action.payload.linkId,
 								parentId: action.payload.parentId
 							})
-						);
-					}
-
-					case ActionTypes.REQUEST_POSTS: {
-						return search({
-							q: `url:'${action.payload.videoId}'`,
-							sort: action.payload.sort,
-							type: "link"
-						}).map(posts => receivePosts(posts));
-					}
-
-					case ActionTypes.REQUEST_VOTE: {
-						const { dir, id, linkId } = action.payload;
-						return vote(
-							store.getState().reddit.me!.modhash,
-							id,
-							dir
-						).map(() => receiveVote({ dir, id, linkId }));
-					}
-
-					default:
-						return [];
+						)
+					);
 				}
+
+				case ActionTypes.REQUEST_POSTS: {
+					return search({
+						q: `url:'${action.payload.videoId}'`,
+						sort: action.payload.sort,
+						type: "link"
+					}).pipe(map(posts => receivePosts(posts)));
+				}
+
+				case ActionTypes.REQUEST_VOTE: {
+					const { dir, id, linkId } = action.payload;
+					return vote(state$.value.reddit.me!.modhash, id, dir).pipe(
+						map(() => receiveVote({ dir, id, linkId }))
+					);
+				}
+
+				default:
+					return [];
 			}
-		);
+		})
+	);
 
 export * from "./actions";
 export * from "./model";

@@ -1,6 +1,6 @@
 import i18n from "common/i18n";
 
-const chunks: [[number, string]] = [
+const chunks: [number, string][] = [
 	[60 * 60 * 24 * 365, "time:year"],
 	[60 * 60 * 24 * 30, "time:month"],
 	[60 * 60 * 24, "time:day"],
