@@ -6,7 +6,8 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
 	entry: {
-		index: [`${common.paths.src}/index.tsx`]
+		index: [`${common.paths.src}/index.tsx`],
+		background: [`${common.paths.src}/background.ts`]
 	},
 	output: {
 		path: common.paths.dist,

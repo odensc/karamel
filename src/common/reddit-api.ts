@@ -1,27 +1,21 @@
-import { Observable } from "common/rxjs";
-import { Me } from "data/reddit";
 import { stringify } from "querystring";
-import { AjaxRequest, AjaxResponse } from "rxjs";
+import { from, throwError } from "rxjs";
+import { ajax as _ajax } from "rxjs/ajax";
+import { map, mergeMap } from "rxjs/operators";
 
-const handleJsonError = (selector: <T>(response: any) => T) => (
-	res: AjaxResponse
-) => {
-	const error = res.response.json.errors[0];
-	if (error) return Observable.throw(error[1]);
-	else return [selector(res.response.json.data)];
+import { FetchRequest, FetchResponse } from "background";
+import { Comment, Me } from "data/reddit";
+
+const handleJsonError = (selector: (response: any) => any) => (res: any) => {
+	const error = res.json.errors[0];
+	if (error) return throwError(error[1]);
+	else return [selector(res.json.data)];
 };
 
-const ajax = (url: string, options?: Partial<AjaxRequest>) =>
-	Observable.ajax({
-		method: "GET",
-		responseType: "json",
-		timeout: 10000,
-		url,
-		withCredentials: true,
-		...options
-	});
-
-export const BASE_URL = "https://www.reddit.com";
+const ajax = (opts: FetchRequest) =>
+	from<Promise<FetchResponse>>(chrome.runtime.sendMessage(opts)).pipe(
+		mergeMap(res => (res.error ? throwError(res.error) : [res.data]))
+	);
 
 export function comment(modhash: string, parentId: string, text: string) {
 	const query = {
@@ -30,15 +24,16 @@ export function comment(modhash: string, parentId: string, text: string) {
 		thing_id: parentId,
 		uh: modhash
 	};
-	return ajax(`${BASE_URL}/api/comment.json?${stringify(query)}`, {
+	return ajax({
+		url: `/api/comment.json?${stringify(query)}`,
 		method: "POST"
-	}).mergeMap(handleJsonError(res => res.things[0].data));
+	}).pipe<Comment>(mergeMap(handleJsonError(res => res.things[0].data)));
 }
 
-export function getMe(): Observable<Me | undefined> {
-	return ajax(`${BASE_URL}/api/me.json`).mergeMap(res => [
-		res.response.data.modhash ? res.response.data : undefined
-	]);
+export function getMe() {
+	return ajax({ url: `/api/me.json`, method: "GET" }).pipe(
+		map(res => (res.data.modhash ? (res.data as Me) : undefined))
+	);
 }
 
 export function getMoreChildren(
@@ -54,33 +49,37 @@ export function getMoreChildren(
 		link_id: linkId,
 		sort
 	};
-	return ajax(
-		`${BASE_URL}/api/morechildren.json?${stringify(query)}`
-	).mergeMap(
-		handleJsonError(res => (res ? res.things.map((c: any) => c.data) : []))
+	return ajax({
+		url: `/api/morechildren.json?${stringify(query)}`,
+		method: "GET"
+	}).pipe<Comment[]>(
+		mergeMap(
+			handleJsonError(res =>
+				res ? res.things.map((c: any) => c.data) : []
+			)
+		)
 	);
 }
 
 export function getPost(postId: string, sort: string) {
-	return ajax(`${BASE_URL}/${postId}.json?sort=${sort}`).map(
-		res => res.response
+	return ajax({ url: `/${postId}.json?sort=${sort}`, method: "GET" }).pipe(
+		map(res => res)
 	);
 }
 
 export function save(modhash: string, id: string, unsave?: boolean) {
 	const query = { id, uh: modhash };
-	return ajax(
-		`${BASE_URL}/api/${unsave ? "unsave" : "save"}?${stringify(query)}`,
-		{
-			method: "POST"
-		}
-	);
+	return ajax({
+		url: `/api/${unsave ? "unsave" : "save"}?${stringify(query)}`,
+		method: "POST"
+	});
 }
 
 export function search(query: QuerySearch) {
-	return ajax(`${BASE_URL}/search.json?${stringify(query)}`).map(res =>
-		res.response.data.children.map((c: any) => c.data)
-	);
+	return ajax({
+		url: `/search.json?${stringify(query as any)}`,
+		method: "GET"
+	}).pipe(map(res => res.data.children.map((c: any) => c.data)));
 }
 
 export function vote(modhash: string, id: string, dir: number) {
@@ -90,9 +89,7 @@ export function vote(modhash: string, id: string, dir: number) {
 		rank: 2,
 		uh: modhash
 	};
-	return ajax(`${BASE_URL}/api/vote.json?${stringify(query)}`, {
-		method: "POST"
-	});
+	return ajax({ url: `/api/vote.json?${stringify(query)}`, method: "POST" });
 }
 
 interface QuerySearch {
