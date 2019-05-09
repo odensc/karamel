@@ -27,3 +27,7 @@ chrome.runtime.onMessage.addListener(
 		return true;
 	}
 );
+
+chrome.browserAction.onClicked.addListener(() =>
+	chrome.runtime.openOptionsPage()
+);
