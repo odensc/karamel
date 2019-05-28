@@ -58,6 +58,7 @@ export class Post extends React.Component<PostProps, {}> {
 
 					<div className={style.headerContent}>
 						<a
+							target="_blank"
 							className={style.title}
 							href={`https://reddit.com${post.permalink}`}
 						>
