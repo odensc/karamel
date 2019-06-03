@@ -1,3 +1,8 @@
+# v1.4.0
+
+-   Add option to toggle the default of hiding YouTube comments
+-   Fixed a bug where posts would not show after switching videos
+
 # v1.3.1
 
 -   Fix loading indicator showing on options page
