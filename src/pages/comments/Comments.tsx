@@ -58,7 +58,14 @@ class Comments extends React.Component<
 
 	componentDidUpdate(prevProps: ReduxProps, prevState: CommentsState) {
 		// Select first post if it's the first load
-		if (prevProps.posts.length !== this.props.posts.length) {
+		if (
+			!this.props.posts.every(
+				nextPost =>
+					!!prevProps.posts.find(
+						prevPost => prevPost.id === nextPost.id
+					)
+			)
+		) {
 			this.selectFirstPost(this.props.posts);
 		}
 
