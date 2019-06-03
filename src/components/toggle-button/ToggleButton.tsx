@@ -33,7 +33,7 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 			layer.getCommentsContainerQuery()
 		) as HTMLElement;
 		// Use opacity to hide comments, this prevents rendering artifacts.
-		if (path === "/youtube") {
+		if (!this.props.hideYoutubeComments || path === "/youtube") {
 			comments.style.pointerEvents = "auto";
 			comments.style.opacity = "1";
 		} else {
@@ -71,6 +71,7 @@ export interface ToggleButtonProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	hideYoutubeComments: state.options.hideYoutubeComments,
 	path: state.router.location.pathname
 });
 

@@ -11,8 +11,13 @@ import style from "./Options.scss";
 
 @translate(["options", "post"])
 class Options extends React.Component<OptionsProps, {}> {
-	onChange = (key: string, e: React.ChangeEvent<HTMLSelectElement>) => {
-		this.props.update({ [key]: e.target.value });
+	onChange = (
+		key: string,
+		e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+	) => {
+		this.props.update({
+			[key]: "checked" in e.target ? e.target.checked : e.target.value
+		});
 	};
 
 	render() {
@@ -31,11 +36,11 @@ class Options extends React.Component<OptionsProps, {}> {
 			<section className={style.container}>
 				{me && (
 					<p>
-						Logged into Reddit as: <b>{me.name}</b>
+						<b>Logged into Reddit as:</b> {me.name}
 					</p>
 				)}
 				<p>
-					{t("default")}:{" "}
+					<b>{t("default")}:</b>{" "}
 					<select
 						onChange={this.onChange.bind(null, "default")}
 						value={options.default}
@@ -45,7 +50,7 @@ class Options extends React.Component<OptionsProps, {}> {
 					</select>
 				</p>
 				<p>
-					{t("commentSort")}:{" "}
+					<b>{t("commentSort")}:</b>{" "}
 					<select
 						onChange={this.onChange.bind(null, "commentSort")}
 						value={options.commentSort}
@@ -58,7 +63,18 @@ class Options extends React.Component<OptionsProps, {}> {
 					</select>
 				</p>
 				<p>
-					{t("postSort")}:{" "}
+					<b>{t("hideYoutubeComments")}:</b>{" "}
+					<input
+						type="checkbox"
+						onChange={this.onChange.bind(
+							null,
+							"hideYoutubeComments"
+						)}
+						checked={options.hideYoutubeComments}
+					/>
+				</p>
+				<p>
+					<b>{t("postSort")}:</b>{" "}
 					<select
 						onChange={this.onChange.bind(null, "postSort")}
 						value={options.postSort}
