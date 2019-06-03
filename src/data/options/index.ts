@@ -12,6 +12,7 @@ import { State } from "./model";
 const initialState: State = {
 	commentSort: "best",
 	default: "reddit",
+	hideYoutubeComments: true,
 	postSort: "top"
 };
 

@@ -6,4 +6,15 @@
 	margin-left: 20px;
 	min-height: 150px;
 	justify-content: space-around;
+
+	p {
+		display: flex;
+		flex-direction: column;
+		margin: 10px 0;
+	}
+
+	input {
+		width: 20px;
+		height: 20px;
+	}
 }
