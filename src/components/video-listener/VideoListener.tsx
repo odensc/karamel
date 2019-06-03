@@ -13,23 +13,18 @@ class VideoListener extends React.Component<
 	VideoListenerProps & ReduxProps,
 	{}
 > {
-	private descTimeoutId: any;
 	private intervalId: any;
 
 	checkLocation = () => {
 		const search = new URLSearchParams(location.search);
 		const id = search.get("v");
-		if (this.props.id !== id) {
-			clearTimeout(this.descTimeoutId);
-			this.descTimeoutId = setTimeout(() => {
-				this.props.update({
-					description:
-						document.querySelector(
-							getCurrentLayer().getVideoDescriptionQuery()
-						)!.textContent || ""
-				});
-			}, 1000);
+		const description =
+			document.querySelector(
+				getCurrentLayer().getVideoDescriptionQuery()
+			)!.textContent || "";
+		if (this.props.id !== id || this.props.description !== description) {
 			this.props.update({
+				description,
 				id
 			});
 		}
@@ -61,6 +56,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 	);
 
 const mapStateToProps = (state: State) => ({
+	description: state.video.description,
 	id: state.video.id
 });
 
