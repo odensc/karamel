@@ -30,6 +30,9 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 	componentWillReceiveProps(nextProps: ReduxProps) {
 		if (location.protocol === "chrome-extension:") return;
 
+		// Remove posts with 0 comments
+		if (this.props.hideZeroCommentPosts) nextProps.posts.splice(0, nextProps.posts.length, ...nextProps.posts.filter(post => post.num_comments > 0))
+
 		// If there are no posts for the next video, switch to YouTube comments.
 		if (!nextProps.postsLoading && nextProps.posts.length === 0) {
 			this.props.push("/youtube");
@@ -73,6 +76,7 @@ export interface AppProps {}
 
 const mapStateToProps = (state: State) => ({
 	default: state.options.default,
+	hideZeroCommentPosts: state.options.hideZeroCommentPosts,
 	path: state.router.location.pathname,
 	posts: state.reddit.posts,
 	postsLoading: state.reddit.postsLoading

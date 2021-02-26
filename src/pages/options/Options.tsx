@@ -74,6 +74,17 @@ class Options extends React.Component<OptionsProps, {}> {
 					/>
 				</p>
 				<p>
+					<b>{t("hideZeroCommentPosts")}:</b>{" "}
+					<input
+						type="checkbox"
+						onChange={this.onChange.bind(
+							null,
+							"hideZeroCommentPosts"
+						)}
+						checked={options.hideZeroCommentPosts}
+					/>
+				</p>
+				<p>
 					<b>{t("postSort")}:</b>{" "}
 					<select
 						onChange={this.onChange.bind(null, "postSort")}

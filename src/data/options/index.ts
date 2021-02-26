@@ -13,6 +13,7 @@ const initialState: State = {
 	commentSort: "best",
 	default: "reddit",
 	hideYoutubeComments: true,
+	hideZeroCommentPosts: false,
 	postSort: "top"
 };
 
