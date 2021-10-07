@@ -3,5 +3,6 @@
 	"commentSort": "Sort comments by",
 	"default": "Show comments from (default)",
 	"hideYoutubeComments": "Hide YouTube comments by default",
+	"hideZeroCommentPosts": "Hide posts with 0 comments",
 	"postSort": "Sort posts by"
 }
