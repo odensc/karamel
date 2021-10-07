@@ -4,7 +4,7 @@
 	"name": "Karamel: View Reddit comments on YouTube™",
 	"short_name": "Karamel",
 	"description": "Step up your viewing experience by embedding relevant Reddit comments under YouTube videos.",
-	"version": "1.4.0",
+	"version": "1.5.0",
 
 	"browser_action": {
 		"default_icon": "icon-48.png"

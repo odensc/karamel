@@ -1,5 +1,9 @@
 # v1.4.0
 
+-   Add option to hide posts with zero comments (thanks @mpizzaca on GitHub)
+
+# v1.4.0
+
 -   Add option to toggle the default of hiding YouTube comments
 -   Fixed a bug where posts would not show after switching videos
 
