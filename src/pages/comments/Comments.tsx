@@ -9,7 +9,7 @@ import {
 	Post as RedditPost,
 	requestComments,
 	requestMoreComments,
-	requestPosts
+	requestPosts,
 } from "data/reddit";
 
 import { Loading } from "components/loading";
@@ -35,7 +35,7 @@ class Comments extends React.Component<
 			linkId,
 			id,
 			children,
-			sort
+			sort,
 		});
 	};
 
@@ -48,8 +48,8 @@ class Comments extends React.Component<
 		this.setState({
 			sort: {
 				...this.state.sort,
-				[this.state.post!.name]: e.target.value
-			}
+				[this.state.post!.name]: e.target.value,
+			},
 		});
 	};
 
@@ -60,9 +60,9 @@ class Comments extends React.Component<
 		// Select first post if it's the first load
 		if (
 			!this.props.posts.every(
-				nextPost =>
+				(nextPost) =>
 					!!prevProps.posts.find(
-						prevPost => prevPost.id === nextPost.id
+						(prevPost) => prevPost.id === nextPost.id
 					)
 			)
 		) {
@@ -128,8 +128,10 @@ const mapStateToProps = (state: State) => ({
 	description: state.video.description,
 	modhash: state.reddit.me ? state.reddit.me.modhash : "",
 	moreCommentsLoading: state.reddit.moreCommentsLoading,
-	posts: state.reddit.posts,
-	postsLoading: state.reddit.postsLoading
+	posts: state.options.hideZeroCommentPosts
+		? state.reddit.posts.filter((post) => post.num_comments > 0)
+		: state.reddit.posts,
+	postsLoading: state.reddit.postsLoading,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
@@ -137,7 +139,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 		{
 			requestComments,
 			requestMoreComments,
-			requestPosts
+			requestPosts,
 		},
 		dispatch
 	);
