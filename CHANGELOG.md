@@ -1,4 +1,4 @@
-# v1.4.0
+# v1.5.0
 
 -   Add option to hide posts with zero comments (thanks @mpizzaca on GitHub)
 
