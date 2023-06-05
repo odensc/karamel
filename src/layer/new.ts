@@ -2,7 +2,7 @@ import { CompatLayer } from "./";
 
 export default class NewLayer implements CompatLayer {
 	getWatchQuery() {
-		return "#main";
+		return ".ytd-item-section-renderer";
 	}
 
 	getCommentsContainerQuery() {
